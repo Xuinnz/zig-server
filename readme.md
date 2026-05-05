@@ -4,7 +4,7 @@ A zig web server created from scratch.
 ## tcp.zig
 A TCP Server of IPv4 that creates and binds the socket. This section contains all the things I learned when coding this.
 
-```bash const sockfd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM, 0);
+```bash 
 const sockfd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM, 0);
 ```
 
