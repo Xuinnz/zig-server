@@ -7,7 +7,7 @@ pub fn run(port: u16) !void {
     const sockfd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM, 0);
     defer posix.close(sockfd);
 
-    try posix.setsockopt(sockfd, posix.SOL.SOCKET, posix.SOL.REUSEADDR, &std.mem.toBytes(@as(c_int, 1)));
+    try posix.setsockopt(sockfd, posix.SOL.SOCKET, posix.SO.REUSEADDR, &std.mem.toBytes(@as(c_int, 1)));
 
     var addr = std.mem.zeroes(posix.sockaddr.in);
     addr.family = posix.AF.INET;
