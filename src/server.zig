@@ -2,6 +2,13 @@ const std = @import("std");
 const posix = std.posix;
 const connect = @import("connection.zig");
 
+//thread wrapper
+fn clientThread(fd: posix.fd_t) void {
+    connect.handleClient(fd) catch |err| {
+        std.debug.print("[Thread {}] Client Dropped: {}\n", .{ std.Thread.getCurrentId(), err });
+    };
+}
+
 pub fn run(port: u16) !void {
     //file descriptor for the socket
     const sockfd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM, 0);
@@ -25,9 +32,15 @@ pub fn run(port: u16) !void {
         //create file descriptor for the client
         const client_fd = try posix.accept(sockfd, @as(*posix.sockaddr, @ptrCast(&client_addr)), &client_addr_len, 0);
 
-        //handle connection
-        connect.handleClient(client_fd) catch |err| {
-            std.debug.print("Client Error: {}\n", .{err});
-        };
+        const timeout = posix.timeval{ .sec = 1, .usec = 0 };
+        try posix.setsockopt(client_fd, posix.SOL.SOCKET, posix.SO.RCVTIMEO, std.mem.asBytes(&timeout));
+
+        //create a thread for every client.
+        const thread = try std.Thread.spawn(.{}, clientThread, .{client_fd});
+        thread.detach();
+
+        //currently, this is in multi-threading. this will work if low concurrent users
+        //but it will due to 1:1 threads-clients ratio
+        //TODO: implement epoll
     }
 }
