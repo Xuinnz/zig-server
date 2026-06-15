@@ -4,48 +4,81 @@ const parser = @import("http/parser.zig");
 const response = @import("http/response.zig");
 const mime = @import("http/mime.zig");
 
-pub fn handleClient(fd: posix.fd_t) !void {
-    defer posix.close(fd);
+//connection phases
+pub const Phase = enum {
+    reading_headers,
+    done,
+};
 
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
+//connection struct
+pub const Connection = struct {
+    fd: posix.fd_t,
+    buffer: [8192]u8,
+    total_read: usize,
+    phase: Phase,
 
-    //limit of 8192 for buffer
-    var buffer: [8192]u8 = undefined;
-    var total_read: usize = 0;
+    //initialize connection
+    pub fn init(fd: posix.fd_t) Connection {
+        return .{
+            .fd = fd,
+            .buffer = undefined,
+            .total_read = 0,
+            .phase = .reading_headers,
+        };
+    }
 
-    while (true) {
-        //case: buffer full
-        if (total_read == buffer.len) {
-            std.debug.print("Buffer full, rejecting request\n", .{});
-            try sendError(fd, .request_header_fields_too_large);
-            return;
-        }
-        //receive
-        const bytes_read = try posix.recv(fd, buffer[total_read..], 0);
-        //client closed connection
-        if (bytes_read == 0) return;
+    pub fn deinit(self: *Connection) void {
+        posix.close(self.fd);
+    }
+};
 
-        total_read += bytes_read;
-        const current_data = buffer[0..total_read];
+pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator) !bool {
+    switch (conn.phase) {
+        .reading_headers => {
+            //loop to get all data
+            while (true) {
+                //buffer full (8192)
+                if (conn.total_read == conn.buffer.len) {
+                    try sendError(conn.fd, .request_header_fields_too_large);
+                    return true;
+                }
+                //receive data
+                const bytes_read = posix.recv(conn.fd, conn.buffer[conn.total_read..], 0) catch |err| {
+                    //no more data in the current buffer
+                    if (err == error.WouldBlock) break;
+                    return true;
+                };
 
-        //header parser
-        if (std.mem.indexOf(u8, current_data, "\r\n\r\n")) |_| {
-            const req_line_end = std.mem.indexOf(u8, current_data, "\r\n") orelse 0;
-            const req_line = current_data[0..req_line_end];
+                //no data read, msg done
+                if (bytes_read == 0) return true;
 
-            const request = parser.parseRequestLine(req_line) catch {
-                try sendError(fd, .bad_request);
-                return;
-            };
+                conn.total_read += bytes_read;
+                const data = conn.buffer[0..conn.total_read];
 
-            std.debug.print("Method: {s}, Path: {s}\n", .{ request.method, request.path });
+                //parse till end of header
+                if (std.mem.indexOf(u8, data, "\r\n\r\n")) |_| {
+                    const req_line_end = std.mem.indexOf(u8, data, "\r\n") orelse 0;
+                    const req_line = data[0..req_line_end];
 
-            const path = if (std.mem.eql(u8, request.path, "/")) "/index.html" else request.path;
-            try serveFile(fd, path, allocator);
-            return;
-        }
+                    const request = parser.parseRequestLine(req_line) catch {
+                        try sendError(conn.fd, .bad_request);
+                        return true;
+                    };
+
+                    std.debug.print("{s} {s}\n", .{ request.method, request.path });
+
+                    //req path, will move to routing soon
+                    const path = if (std.mem.eql(u8, request.path, "/")) "/index.html" else request.path;
+                    try serveFile(conn.fd, path, allocator);
+                    return true;
+                }
+            }
+            //if err = wouldBlock, end of buffer but no end of header yet. connection persist.
+            return false;
+        },
+
+        //connection finished.
+        .done => return true,
     }
 }
 
