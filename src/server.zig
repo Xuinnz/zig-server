@@ -1,46 +1,97 @@
 const std = @import("std");
 const posix = std.posix;
-const connect = @import("connection.zig");
-
-//thread wrapper
-fn clientThread(fd: posix.fd_t) void {
-    connect.handleClient(fd) catch |err| {
-        std.debug.print("[Thread {}] Client Dropped: {}\n", .{ std.Thread.getCurrentId(), err });
-    };
-}
+const linux = std.os.linux;
+const Connection = @import("connection.zig").Connection;
+const handler = @import("connection.zig");
 
 pub fn run(port: u16) !void {
-    //file descriptor for the socket
-    const sockfd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM, 0);
-    defer posix.close(sockfd);
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
 
-    try posix.setsockopt(sockfd, posix.SOL.SOCKET, posix.SO.REUSEADDR, &std.mem.toBytes(@as(c_int, 1)));
+    // epoll instance
+    const epoll_fd = try posix.epoll_create1(0);
+    defer posix.close(epoll_fd);
+
+    // server socket, ipv4 and TCP
+    const server_fd = try posix.socket(posix.AF.INET, posix.SOCK.STREAM | posix.SOCK.NONBLOCK, 0);
+    defer posix.close(server_fd);
+
+    //reuse the same addr
+    try posix.setsockopt(server_fd, posix.SOL.SOCKET, posix.SO.REUSEADDR, &std.mem.toBytes(@as(c_int, 1)));
 
     var addr = std.mem.zeroes(posix.sockaddr.in);
     addr.family = posix.AF.INET;
     addr.port = std.mem.nativeToBig(u16, port);
     addr.addr = 0;
 
-    //bind to port 8080
-    try posix.bind(sockfd, @ptrCast(&addr), @sizeOf(posix.sockaddr.in));
-    //listen to the port, with 128 queue limit
-    try posix.listen(sockfd, 128);
+    //bind the ip address and port
+    try posix.bind(server_fd, @ptrCast(&addr), @sizeOf(posix.sockaddr.in));
+    //128 queue limit
+    try posix.listen(server_fd, 128);
+
+    // watch server_fd for incoming connections
+    var server_event = linux.epoll_event{
+        .events = linux.EPOLL.IN,
+        .data = .{ .fd = server_fd },
+    };
+
+    try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_ADD, server_fd, &server_event);
+
+    // use hashmap to connect fd to its connection
+    var connections = std.AutoHashMap(posix.fd_t, *Connection).init(allocator);
+    defer connections.deinit();
+
+    //events holder, can only process 64 at one batch
+    var events: [64]linux.epoll_event = undefined;
+    std.debug.print("Listening on port {d} (epoll)\n", .{port});
 
     while (true) {
-        var client_addr: posix.sockaddr.storage = undefined; //to store the client addr
-        var client_addr_len: posix.socklen_t = @sizeOf(posix.sockaddr.storage); //size of client_addr
-        //create file descriptor for the client
-        const client_fd = try posix.accept(sockfd, @as(*posix.sockaddr, @ptrCast(&client_addr)), &client_addr_len, 0);
+        // block until events are ready
+        //this returns the number of events from epoll_fd, then copy itself to events for looping
+        const n = posix.epoll_wait(epoll_fd, &events, -1); // -1 = wait forever
 
-        const timeout = posix.timeval{ .sec = 1, .usec = 0 };
-        try posix.setsockopt(client_fd, posix.SOL.SOCKET, posix.SO.RCVTIMEO, std.mem.asBytes(&timeout));
+        //loop through the list
+        for (events[0..n]) |event| {
+            const fd: posix.fd_t = event.data.fd;
 
-        //create a thread for every client.
-        const thread = try std.Thread.spawn(.{}, clientThread, .{client_fd});
-        thread.detach();
+            if (fd == server_fd) {
+                // new connection incoming
+                var client_addr: posix.sockaddr.storage = undefined;
+                var client_len: posix.socklen_t = @sizeOf(posix.sockaddr.storage);
+                const client_fd = posix.accept(server_fd, @ptrCast(&client_addr), &client_len, posix.SOCK.NONBLOCK) catch |err| {
+                    std.debug.print("Accept error: {}\n", .{err});
+                    continue;
+                };
 
-        //currently, this is in multi-threading. this will work if low concurrent users
-        //but it will due to 1:1 threads-clients ratio
-        //TODO: implement epoll
+                // allocate connection state
+                const conn = try allocator.create(Connection);
+                conn.* = Connection.init(client_fd);
+
+                //add to hashmap
+                try connections.put(client_fd, conn);
+
+                // watch client_fd for readability
+                var client_event = linux.epoll_event{
+                    .events = linux.EPOLL.IN | linux.EPOLL.ET, // edge-triggered
+                    .data = .{ .fd = client_fd }, //identification
+                };
+
+                try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_ADD, client_fd, &client_event);
+            } else {
+                // existing connection has data
+                if (connections.get(fd)) |conn| {
+                    const done = handler.handleEvent(conn, allocator) catch true;
+
+                    if (done) {
+                        // remove from epoll, cleanup
+                        try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_DEL, fd, null);
+                        _ = connections.remove(fd);
+                        conn.deinit();
+                        allocator.destroy(conn);
+                    }
+                }
+            }
+        }
     }
 }
