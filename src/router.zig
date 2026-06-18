@@ -1,0 +1,115 @@
+const std = @import("std");
+const posix = std.posix;
+const response = @import("http/response.zig");
+const mime = @import("http/mime.zig");
+
+pub const HandlerFn = *const fn (fd: posix.fd_t, allocator: std.mem.Allocator) anyerror!void;
+
+pub const Route = struct {
+    method: []const u8,
+    path: []const u8,
+    handler: HandlerFn,
+};
+
+//Router initialize and dispatch
+pub const Router = struct {
+    routes: []const Route,
+    pub fn init(routes: []const Route) Router {
+        return .{ .routes = routes };
+    }
+
+    //response
+    pub fn dispatch(
+        self: *const Router,
+        method: []const u8,
+        path: []const u8,
+        fd: posix.fd_t,
+        allocator: std.mem.Allocator,
+    ) !bool {
+        std.debug.print("dispatch: {s} {s}\n", .{ method, path });
+        //we check api if the route is existing in
+        for (self.routes) |route| {
+            std.debug.print("checking route: {s} {s}\n", .{ route.method, route.path });
+            if (std.mem.eql(u8, route.method, method) and std.mem.eql(u8, route.path, path)) {
+                try route.handler(fd, allocator);
+                return true;
+            }
+        }
+        std.debug.print("no api route matched, trying static\n", .{});
+
+        //if no api exist, we check files
+        const served = try serveStatic(fd, path);
+        std.debug.print("serveStatic returned: {}\n", .{served});
+        if (served) return true;
+
+        try sendError(fd, .not_found);
+        return false;
+    }
+};
+//serving file
+fn serveStatic(fd: posix.fd_t, path: []const u8) !bool {
+    var file_path_buf: [512]u8 = undefined;
+    //if path is "/", we go to index.html
+    const normalized = if (std.mem.eql(u8, path, "/")) "/index.html" else path;
+    const file_path = std.fmt.bufPrint(&file_path_buf, "public{s}", .{normalized}) catch {
+        std.debug.print("bufPrint failed for path: {s}\n", .{normalized});
+        return false;
+    };
+
+    const file = std.fs.cwd().openFile(file_path, .{}) catch |err| {
+        std.debug.print("openFile failed: {} for path: {s}\n", .{ err, file_path });
+        return false;
+    };
+    defer file.close();
+
+    const stat = file.stat() catch |err| {
+        std.debug.print("stat failed: {}\n", .{err});
+        return false;
+    };
+    const file_size = stat.size;
+
+    const ext = std.fs.path.extension(file_path);
+    const content_type = mime.fromExtension(ext);
+
+    var header_buf: [512]u8 = undefined;
+    var fbs = std.io.fixedBufferStream(&header_buf);
+    //send header first
+    try response.writeHeaders(fbs.writer(), .ok, content_type, file_size);
+    _ = try posix.send(fd, fbs.getWritten(), 0);
+
+    //send body
+    try sendFile(fd, file, file_size);
+
+    return true;
+}
+
+//instead of copying the file to user space, we just copy the file inside kernel
+fn sendFile(socket_fd: posix.fd_t, file: std.fs.File, file_size: u64) !void {
+    const linux = std.os.linux;
+    var offset: i64 = 0;
+    var remaining: usize = @intCast(file_size);
+
+    while (remaining > 0) {
+        const chunk = @min(remaining, 1024 * 1024 * 512);
+        const sent = linux.sendfile(socket_fd, file.handle, &offset, chunk);
+        const err = posix.errno(sent);
+
+        std.debug.print("sendfile returned: {}, errno: {}\n", .{ sent, err });
+
+        switch (err) {
+            .SUCCESS => {
+                remaining -= sent;
+            },
+            .AGAIN => continue,
+            .INTR => continue,
+            else => return posix.unexpectedErrno(err),
+        }
+    }
+}
+
+fn sendError(fd: posix.fd_t, code: response.StatusCode) !void {
+    var buf: [256]u8 = undefined;
+    var fbs = std.io.fixedBufferStream(&buf);
+    try response.write(fbs.writer(), code, "text/plain", response.statusText(code));
+    _ = try posix.send(fd, fbs.getWritten(), 0);
+}
