@@ -3,8 +3,9 @@ const posix = std.posix;
 const linux = std.os.linux;
 const Connection = @import("connection.zig").Connection;
 const handler = @import("connection.zig");
+const router = @import("router.zig");
 
-pub fn run(port: u16) !void {
+pub fn run(port: u16, r: *const router.Router) !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -81,8 +82,8 @@ pub fn run(port: u16) !void {
             } else {
                 // existing connection has data
                 if (connections.get(fd)) |conn| {
-                    const done = handler.handleEvent(conn, allocator) catch true;
-
+                    //pass down the router
+                    const done = handler.handleEvent(conn, allocator, r) catch true;
                     if (done) {
                         // remove from epoll, cleanup
                         try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_DEL, fd, null);
