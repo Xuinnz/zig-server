@@ -3,7 +3,7 @@ const posix = std.posix;
 const response = @import("http/response.zig");
 const mime = @import("http/mime.zig");
 
-pub const HandlerFn = *const fn (fd: posix.fd_t, allocator: std.mem.Allocator) anyerror!void;
+pub const HandlerFn = *const fn (fd: posix.fd_t, allocator: std.mem.Allocator, keep_alive: bool) anyerror!void;
 
 pub const Route = struct {
     method: []const u8,
@@ -25,29 +25,36 @@ pub const Router = struct {
         path: []const u8,
         fd: posix.fd_t,
         allocator: std.mem.Allocator,
+        keep_alive: bool,
     ) !bool {
         std.debug.print("dispatch: {s} {s}\n", .{ method, path });
+        // //if a request contains "..", they're try to access outside public folder, return bad request
+        if (std.mem.indexOf(u8, path, "..") != null) {
+            try sendError(fd, .bad_request, keep_alive);
+            return false;
+        }
+
         //we check api if the route is existing in
         for (self.routes) |route| {
             std.debug.print("checking route: {s} {s}\n", .{ route.method, route.path });
             if (std.mem.eql(u8, route.method, method) and std.mem.eql(u8, route.path, path)) {
-                try route.handler(fd, allocator);
+                try route.handler(fd, allocator, keep_alive);
                 return true;
             }
         }
         std.debug.print("no api route matched, trying static\n", .{});
 
         //if no api exist, we check files
-        const served = try serveStatic(fd, path);
+        const served = try serveStatic(fd, path, keep_alive);
         std.debug.print("serveStatic returned: {}\n", .{served});
         if (served) return true;
 
-        try sendError(fd, .not_found);
+        try sendError(fd, .not_found, keep_alive);
         return false;
     }
 };
 //serving file
-fn serveStatic(fd: posix.fd_t, path: []const u8) !bool {
+fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !bool {
     var file_path_buf: [512]u8 = undefined;
     //if path is "/", we go to index.html
     const normalized = if (std.mem.eql(u8, path, "/")) "/index.html" else path;
@@ -74,7 +81,7 @@ fn serveStatic(fd: posix.fd_t, path: []const u8) !bool {
     var header_buf: [512]u8 = undefined;
     var fbs = std.io.fixedBufferStream(&header_buf);
     //send header first
-    try response.writeHeaders(fbs.writer(), .ok, content_type, file_size);
+    try response.writeHeaders(fbs.writer(), .ok, content_type, file_size, keep_alive);
     _ = try posix.send(fd, fbs.getWritten(), 0);
 
     //send body
@@ -107,9 +114,9 @@ fn sendFile(socket_fd: posix.fd_t, file: std.fs.File, file_size: u64) !void {
     }
 }
 
-fn sendError(fd: posix.fd_t, code: response.StatusCode) !void {
+fn sendError(fd: posix.fd_t, code: response.StatusCode, keep_alive: bool) !void {
     var buf: [256]u8 = undefined;
     var fbs = std.io.fixedBufferStream(&buf);
-    try response.write(fbs.writer(), code, "text/plain", response.statusText(code));
+    try response.write(fbs.writer(), code, "text/plain", response.statusText(code), keep_alive);
     _ = try posix.send(fd, fbs.getWritten(), 0);
 }
