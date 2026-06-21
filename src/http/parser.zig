@@ -22,6 +22,8 @@ pub fn parseRequestLine(line: []const u8) ParseError!HttpRequest {
     const first_space_idx = std.mem.indexOfScalar(u8, line, ' ') orelse return error.MalformedRequestLine;
     const method = line[0..first_space_idx];
 
+    //TODO: add more request method
+    //only GET and POST is recognized for now
     if (!std.mem.eql(u8, method, "GET") and !std.mem.eql(u8, method, "POST")) {
         return error.InvalidMethod;
     }

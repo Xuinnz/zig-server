@@ -93,6 +93,6 @@ pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator, r: *const ro
 fn sendErrorDirect(fd: posix.fd_t, code: response.StatusCode, keep_alive: bool) !void {
     var buf: [256]u8 = undefined;
     var fbs = std.io.fixedBufferStream(&buf);
-    try response.write(fbs.writer(), code, "text/plain", response.statusText(code), keep_alive);
+    try response.write(fbs.writer(), code, "text/plain", response.statusText(code), keep_alive, .none);
     _ = try posix.send(fd, fbs.getWritten(), 0);
 }

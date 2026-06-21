@@ -80,8 +80,11 @@ fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !bool {
 
     var header_buf: [512]u8 = undefined;
     var fbs = std.io.fixedBufferStream(&header_buf);
+
+    const cache = getCacheControl(path);
+
     //send header first
-    try response.writeHeaders(fbs.writer(), .ok, content_type, file_size, keep_alive);
+    try response.writeHeaders(fbs.writer(), .ok, content_type, file_size, keep_alive, cache);
     _ = try posix.send(fd, fbs.getWritten(), 0);
 
     //send body
@@ -117,6 +120,20 @@ fn sendFile(socket_fd: posix.fd_t, file: std.fs.File, file_size: u64) !void {
 fn sendError(fd: posix.fd_t, code: response.StatusCode, keep_alive: bool) !void {
     var buf: [256]u8 = undefined;
     var fbs = std.io.fixedBufferStream(&buf);
-    try response.write(fbs.writer(), code, "text/plain", response.statusText(code), keep_alive);
+    try response.write(fbs.writer(), code, "text/plain", response.statusText(code), keep_alive, .none);
     _ = try posix.send(fd, fbs.getWritten(), 0);
+}
+
+fn getCacheControl(path: []const u8) response.CacheControl {
+    const ext = std.fs.path.extension(path);
+    // long cache for static assets
+    if (std.mem.eql(u8, ext, ".css")) return .long;
+    if (std.mem.eql(u8, ext, ".js")) return .long;
+    if (std.mem.eql(u8, ext, ".png")) return .long;
+    if (std.mem.eql(u8, ext, ".jpg")) return .long;
+    if (std.mem.eql(u8, ext, ".ico")) return .long;
+    if (std.mem.eql(u8, ext, ".woff")) return .long;
+    if (std.mem.eql(u8, ext, ".woff2")) return .long;
+    if (std.mem.eql(u8, ext, ".html")) return .short;
+    return .short;
 }
