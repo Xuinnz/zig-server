@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>r-alloc — Custom Memory Allocator · Red Tagura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="../../index.html" class="nav__brand">red<span>.systems</span></a>
+      <ul class="nav__links">
+        <li><a href="../../index.html">/home</a></li>
+        <li><a href="../projects.html">/projects</a></li>
+        <li><a href="../blog.html">/blog</a></li>
+        <li><a href="../../index.html#contact">/contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <a href="../projects.html" class="page-hero__back">← /projects</a>
+        <div class="breadcrumb">
+          <a href="../../index.html">red.systems</a><span>/</span>
+          <a href="../projects.html">projects</a><span>/</span>
+          <span>r-alloc</span>
+        </div>
+        <h1 class="page-hero__title">r-alloc —<br>Custom Memory Allocator</h1>
+        <div class="page-hero__meta">
+          <span class="page-hero__meta-item">[ 2025 ]</span>
+          <span class="page-hero__meta-item">[ C++ · N-API · mmap ]</span>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <div class="tags">
+            <span class="tag tag--accent">C++</span>
+            <span class="tag">Python</span>
+            <span class="tag">N-API</span>
+            <span class="tag">mmap</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Systems</span>
+            <span class="tag">Memory</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <article class="prose">
+      <div class="container">
+
+        <p>
+          r-alloc implements Arena and Slab memory allocation strategies in C++ using <code>mmap</code> for direct page-level memory management. A Node.js bridge via N-API lets backend applications use these allocators for hot allocation paths — bypassing V8's garbage collector entirely for those objects.
+        </p>
+
+        <h2>Two Strategies</h2>
+
+        <h3>Arena Allocator</h3>
+        <p>
+          Allocates a large contiguous region upfront via <code>mmap(MAP_ANONYMOUS)</code>. Individual allocations are bump-pointer: just increment a cursor. Deallocation is free — reset the cursor to zero to reclaim the entire arena. Best for request-scoped allocations that all die at the same time.
+        </p>
+
+        <pre><code><span class="token-comment">// Arena bump allocation (C++)</span>
+<span class="token-keyword">void</span>* Arena::<span class="token-fn">alloc</span>(<span class="token-type">size_t</span> n) {
+    n = <span class="token-fn">align8</span>(n);
+    <span class="token-keyword">if</span> (cursor + n > capacity) <span class="token-keyword">throw</span> std::<span class="token-fn">bad_alloc</span>();
+    <span class="token-keyword">void</span>* ptr = base + cursor;
+    cursor += n;
+    <span class="token-keyword">return</span> ptr;
+}</code></pre>
+
+        <h3>Slab Allocator</h3>
+        <p>
+          Maintains a pool of fixed-size chunks. Allocation pulls from a free-list; deallocation returns to it. Zero fragmentation for uniform object sizes — ideal for objects like connection structs or parsed request headers that are created and destroyed rapidly but at unpredictable times.
+        </p>
+
+        <h2>The N-API Bridge</h2>
+        <p>
+          N-API (Node-API) is the stable C interface for writing Node.js native addons. r-alloc compiles to a <code>.node</code> shared library that Node.js can <code>require()</code> like any module. From JavaScript, calling <code>alloc.arena.alloc(size)</code> goes through N-API, executes the C++ arena bump, and returns a <code>Buffer</code> wrapping the raw pointer — no copy, no GC involvement.
+        </p>
+
+        <h2>Benchmarks</h2>
+        <p>
+          Against a synthetic workload of repeated fixed-size allocations and frees in a Node.js request handler:
+        </p>
+        <ul>
+          <li>Maximum observed latency (P99.9) lower than glibc malloc and V8 heap</li>
+          <li>Peak RSS lower due to no GC metadata overhead and predictable page usage</li>
+          <li>Mean throughput comparable to V8 for the slab case; higher for arena (reset is O(1))</li>
+        </ul>
+        <p>
+          The gains are most significant at high allocation frequency — GC pause jitter dominates V8's latency distribution at heavy load.
+        </p>
+
+        <h2>Connection to SAMM</h2>
+        <p>
+          r-alloc is the predecessor to my thesis project SAMM. It proved the N-API bridge approach works and that arena strategies are viable for Node.js hot paths. SAMM extends this by adding the profile-guided selection layer — so instead of the developer choosing which allocator to use per site, the profiler chooses automatically.
+        </p>
+
+        <hr />
+        <p>Read the companion post: <a href="../blog/napi-bridge.html">Bypassing V8's GC With N-API and mmap →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__mono">
+        <a href="../projects.html">← back to projects</a> · red.systems · <a href="https://github.com/Xuinnz" target="_blank" rel="noopener">github.com/Xuinnz</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

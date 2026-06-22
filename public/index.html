@@ -1,13 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Gabriel Tagura — CS @ PUP</title>
+  <meta name="description" content="Red Gabriel Tagura — Computer Science student at PUP Manila. Systems programmer, backend engineer, and tool builder." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <h1>
-        well, hello world?
-    </h1>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__brand">red<span>.systems</span></a>
+      <ul class="nav__links">
+        <li><a href="index.html">/home</a></li>
+        <li><a href="pages/projects.html">/projects</a></li>
+        <li><a href="pages/blog.html">/blog</a></li>
+        <li><a href="#contact">/contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="breadcrumb">
+          <span>red.systems</span>
+          <span>/</span>
+          <span>home</span>
+        </div>
+
+        <p class="hero__eyebrow">~ currently in Manila, PH</p>
+        <h1 class="hero__name">Red Gabriel<br>Tagura<span class="cursor"></span></h1>
+        <p class="hero__title">Computer Science — Systems Programming &amp; Backend Engineering</p>
+
+        <div class="hero__rule"></div>
+
+        <div class="hero__bio">
+          <p>
+            I build the things beneath the things. Memory allocators, compilers, custom servers, and the backend scaffolding that makes software not embarrassing to run. Most of my work lives in Zig, C++, or Python — whichever one the problem actually calls for.
+          </p>
+          <p>
+            Currently a CS student at PUP Manila (GWA 1.35, President's Lister), finishing an undergraduate thesis on profile-guided memory allocation. On the side, I head the backend department at Shift Out and run membership infrastructure for Junior Blockchain of the Philippines.
+          </p>
+          <p>
+            I believe fast, honest tools are also good tools. The simplest thing that could possibly work at scale.
+          </p>
+        </div>
+
+        <div class="browse-box">
+          <p class="browse-box__label">Browse to</p>
+          <ul class="browse-box__links">
+            <li><a href="pages/projects.html">/projects <span>— tools and systems I've built</span></a></li>
+            <li><a href="pages/blog.html">/blog <span>— writing on systems and infrastructure</span></a></li>
+            <li><a href="#experience">/experience <span>— orgs and roles</span></a></li>
+            <li><a href="#contact">/contact <span>— links, email, and socials</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">01</span>
+          <h2 class="section__title">Technical Skills</h2>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+          <div>
+            <p class="text-mono text-muted" style="font-size:0.75rem;margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase;">Languages</p>
+            <div class="tags">
+              <span class="tag tag--accent">Zig</span>
+              <span class="tag tag--accent">C++</span>
+              <span class="tag tag--accent">C</span>
+              <span class="tag">Python</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Java</span>
+              <span class="tag">PHP</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-mono text-muted" style="font-size:0.75rem;margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase;">Frameworks &amp; Libraries</p>
+            <div class="tags">
+              <span class="tag">Express.js</span>
+              <span class="tag">FastAPI</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">React Native</span>
+              <span class="tag">N-API</span>
+              <span class="tag">Raylib</span>
+              <span class="tag">Java Swing</span>
+              <span class="tag">Laravel</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-mono text-muted" style="font-size:0.75rem;margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase;">Cloud &amp; Infra</p>
+            <div class="tags">
+              <span class="tag">Docker</span>
+              <span class="tag">Git</span>
+              <span class="tag">CI/CD</span>
+              <span class="tag">Vercel</span>
+              <span class="tag">Render</span>
+              <span class="tag">Microsoft Azure</span>
+            </div>
+          </div>
+          <div>
+            <p class="text-mono text-muted" style="font-size:0.75rem;margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase;">Databases</p>
+            <div class="tags">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Supabase</span>
+              <span class="tag">Redis</span>
+              <span class="tag">MySQL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS PREVIEW -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">02</span>
+          <h2 class="section__title">Projects</h2>
+        </div>
+
+        <div class="projects-grid">
+
+          <a href="pages/projects/samm.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">Python</span>
+                <span class="tag">Node.js</span>
+                <span style="color:var(--muted)">· 2026 – Present</span>
+              </div>
+              <h3 class="project-card__name">Stratified Autonomous Memory Manager</h3>
+              <p class="project-card__desc">Undergraduate thesis. Offline profile-guided allocator using mmap with K-Means lifetime prediction to pre-bake arena selection — targeting P99 latency and peak RSS reduction in 1 GB-constrained Node.js backends.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Systems</span><span class="tag">Memory</span><span class="tag">Thesis</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="pages/projects/ambigui2.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">Raylib</span>
+                <span style="color:var(--muted)">· 2026</span>
+              </div>
+              <h3 class="project-card__name">ambigui2 — Tetromino AI Engine</h3>
+              <p class="project-card__desc">Dual-state bitboard Tetris engine in Zig with Raylib rendering. 139k nodes/sec at depth 5, 17.4ms/move. Heuristic weights evolved via tournament genetic algorithm, improving score 2.70× over baseline.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">AI</span><span class="tag">Game Engine</span><span class="tag">Algorithms</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="pages/projects/zig-server.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">TCP</span>
+                <span class="tag">Linux</span>
+                <span style="color:var(--muted)">· 2026</span>
+              </div>
+              <h3 class="project-card__name">Zig Server — Custom HTTP/1.1 Web Server</h3>
+              <p class="project-card__desc">Zero-dependency HTTP/1.1 server in Zig. Raw TCP socket listener, hand-rolled HTTP parser, Linux epoll for non-blocking async I/O. No libuv, no framework — the simplest thing that works at scale.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Systems</span><span class="tag">Networking</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="pages/projects/gabay-med.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">React</span>
+                <span class="tag">React Native</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">Llama-3</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">Gabay Med — AI Healthcare Platform</h3>
+              <p class="project-card__desc">Two-sided platform: hospital middleware dashboard for insurance and appointments, plus a patient mobile app. Dual-Agent RAG pipeline on Llama-3 with triage and DOH-cross-validation agents.</p>
+              <div class="project-card__tags">
+                <div class="tags">
+                  <span class="tag">AI</span><span class="tag">Healthcare</span><span class="tag">Full-stack</span>
+                  <span class="award-badge">🏆 2nd Runner-up — PUP Hackathon</span>
+                </div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="pages/projects/r-alloc.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">C++</span>
+                <span class="tag">Python</span>
+                <span class="tag">N-API</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">r-alloc — Custom Memory Allocator</h3>
+              <p class="project-card__desc">Arena and Slab strategies in C++ via mmap, bridged to Node.js through N-API to bypass V8 GC. Reduces maximum latency and peak RSS vs glibc malloc and V8.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Systems</span><span class="tag">Memory</span><span class="tag">C++</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="pages/projects/setra.html" class="project-card">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">C++</span>
+                <span class="tag">Compiler Design</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">Setra — Domain-Specific Language</h3>
+              <p class="project-card__desc">Full compiler pipeline in C++ from scratch — Lexer, Parser, Semantic Analyzer — for a DSL targeting discrete mathematics. No frameworks, no generators.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Compilers</span><span class="tag">Languages</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+        </div>
+
+        <div style="margin-top:1.5rem;">
+          <a href="pages/projects.html" class="text-mono text-muted" style="font-size:0.875rem;">View all projects →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="section" id="experience">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">03</span>
+          <h2 class="section__title">Experience</h2>
+        </div>
+
+        <div>
+          <div class="experience-item">
+            <div class="experience-item__header">
+              <span class="experience-item__org">Shift Out</span>
+              <span class="experience-item__date">Sep 2025 – Present</span>
+            </div>
+            <p class="experience-item__role">Backend Department Head · Manila, PH</p>
+            <ul class="experience-item__bullets">
+              <li>Designed and delivered <em>Behind the Code</em> workshop series covering backend architecture, Git branching, and CI/CD pipelines — directly upskilling 50+ members across 4 cohorts.</li>
+              <li>Established organization-wide code review standards and PR workflow policies, reducing merge conflicts and integration defects across all active tech projects.</li>
+            </ul>
+          </div>
+
+          <div class="experience-item">
+            <div class="experience-item__header">
+              <span class="experience-item__org">Junior Blockchain of the Philippines</span>
+              <span class="experience-item__date">Sep 2025 – Present</span>
+            </div>
+            <p class="experience-item__role">Membership Committee Head · Manila, PH</p>
+            <ul class="experience-item__bullets">
+              <li>Architected a centralized membership platform on Supabase (PostgreSQL), consolidating onboarding, attendance, and engagement tracking for 400+ active members into a single auditable data source.</li>
+              <li>Designed row-level security policies and relational schemas to enforce role-based access control across all membership lifecycle events.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PEOPLE ALSO ASK -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">04</span>
+          <h2 class="section__title">People Also Ask</h2>
+        </div>
+
+        <div class="faq">
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              What does Red actually work on day-to-day?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              Mostly low-level systems work — memory allocators, custom servers, compiler pipelines. Right now the thesis is the main project: a profile-guided allocator in Zig that tries to predict allocation lifetimes using K-Means so it can pre-assign arenas before runtime. On top of that, org work at Shift Out and JBP.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              Why Zig?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              Zig gives you C-level control without the footguns of C, and without Rust's sometimes-oppressive borrow checker when you're doing intentionally unsafe memory work. The comptime system is genuinely interesting. That said, I'll use whatever makes the most sense — the allocator uses Zig, the ML side uses Python, the bridge uses N-API. Tools should serve the problem.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              Is Red open to internships or collaborations?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              Yes. Particularly interested in roles involving infrastructure, developer tooling, backend architecture, or anything close to the metal. Reach out at <a href="mailto:redtagura07@gmail.com">redtagura07@gmail.com</a>.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              Where is Red in school right now?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              Third year BS Computer Science at Polytechnic University of the Philippines — Manila. GWA 1.35, President's Lister. Expected graduation June 2027. The thesis is the current capstone work.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              What's the Gabay Med hackathon project about?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              An AI-powered healthcare platform built at the PUP Hackathon. Hospital-side: a dashboard for managing doctors, appointments, and insurance. Patient-side: a mobile app for booking. The interesting part is the dual-agent RAG system on Llama-3 — one agent routes the patient to the nearest qualified hospital, another cross-validates recommendations against DOH guidelines. Took 2nd Runner-up out of 18 teams.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__question" aria-expanded="false">
+              Does Red write about his projects?
+              <span class="faq-item__icon">+</span>
+            </button>
+            <div class="faq-item__answer">
+              Yes — the <a href="pages/blog.html">/blog</a> section has deep-dives on the technical decisions behind each project. Each project page also links to the corresponding write-up.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS / CONTACT -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__label">05</span>
+          <h2 class="section__title">Links</h2>
+        </div>
+
+        <div class="links-grid">
+          <a href="mailto:redtagura07@gmail.com" class="link-card">
+            <span class="link-card__icon">[ email ]</span>
+            <span class="link-card__name">Email</span>
+            <span class="link-card__sub">redtagura07@gmail.com</span>
+          </a>
+          <a href="https://github.com/Xuinnz" target="_blank" rel="noopener" class="link-card">
+            <span class="link-card__icon">[ github ]</span>
+            <span class="link-card__name">GitHub</span>
+            <span class="link-card__sub">github.com/Xuinnz</span>
+          </a>
+          <a href="https://linkedin.com/in/red-gabriel-tagura" target="_blank" rel="noopener" class="link-card">
+            <span class="link-card__icon">[ linkedin ]</span>
+            <span class="link-card__name">LinkedIn</span>
+            <span class="link-card__sub">red-gabriel-tagura</span>
+          </a>
+          <a href="tel:+639944262357" class="link-card">
+            <span class="link-card__icon">[ phone ]</span>
+            <span class="link-card__name">Phone</span>
+            <span class="link-card__sub">+63 994 426 2357</span>
+          </a>
+        </div>
+
+        <div style="margin-top:2rem;padding:1.5rem;border:1px solid var(--rule);">
+          <p class="text-mono text-muted" style="font-size:0.875rem;">
+            Currently based in Sta. Mesa, Manila · Open to remote &amp; on-site opportunities
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__mono">
+        red.systems · Built with HTML, CSS, and zero dependencies<br />
+        <a href="https://github.com/Xuinnz" target="_blank" rel="noopener">github.com/Xuinnz</a> · Manila, PH
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // FAQ accordion
+    document.querySelectorAll('.faq-item__question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => {
+          i.classList.remove('open');
+          i.querySelector('.faq-item__question').setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

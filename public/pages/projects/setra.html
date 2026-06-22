@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setra — Domain-Specific Language · Red Tagura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="../../index.html" class="nav__brand">red<span>.systems</span></a>
+      <ul class="nav__links">
+        <li><a href="../../index.html">/home</a></li>
+        <li><a href="../projects.html">/projects</a></li>
+        <li><a href="../blog.html">/blog</a></li>
+        <li><a href="../../index.html#contact">/contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <a href="../projects.html" class="page-hero__back">← /projects</a>
+        <div class="breadcrumb">
+          <a href="../../index.html">red.systems</a><span>/</span>
+          <a href="../projects.html">projects</a><span>/</span>
+          <span>setra</span>
+        </div>
+        <h1 class="page-hero__title">Setra —<br>Domain-Specific Language</h1>
+        <div class="page-hero__meta">
+          <span class="page-hero__meta-item">[ 2025 ]</span>
+          <span class="page-hero__meta-item">[ C++ · Compiler Design ]</span>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <div class="tags">
+            <span class="tag tag--accent">C++</span>
+            <span class="tag">Compiler Design</span>
+            <span class="tag">Lexer</span>
+            <span class="tag">Parser</span>
+            <span class="tag">Semantic Analysis</span>
+            <span class="tag">DSL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <article class="prose">
+      <div class="container">
+
+        <p>
+          Setra is a domain-specific language for discrete mathematics, with a full compiler pipeline written from scratch in C++. Lexer, recursive-descent parser, and semantic analyzer — no ANTLR, no Flex/Bison, no dependencies. Every token, every grammar rule, every type check written by hand.
+        </p>
+
+        <h2>What Setra Looks Like</h2>
+        <p>
+          Setra expressions map directly to discrete math notation. Sets, predicates, quantifiers, and logical connectives are first-class syntax:
+        </p>
+
+        <pre><code><span class="token-comment">// Setra source</span>
+<span class="token-keyword">let</span> A = {1, 2, 3, 4, 5};
+<span class="token-keyword">let</span> B = {x ∈ A | x > 2};
+
+<span class="token-keyword">assert</span> ∀x ∈ A: x > 0;
+<span class="token-keyword">assert</span> ∃x ∈ B: x = 5;</code></pre>
+
+        <h2>The Compiler Pipeline</h2>
+
+        <h3>Lexer</h3>
+        <p>
+          A hand-written scanner that consumes source characters and emits tokens. Special handling for Unicode math symbols (∀, ∃, ∈, ∩, ∪) so they tokenize cleanly alongside ASCII operators. The lexer is a single-pass state machine — no regex, no backtracking.
+        </p>
+
+        <h3>Parser</h3>
+        <p>
+          A recursive-descent parser that builds an AST from the token stream. Operator precedence is encoded directly in the call hierarchy — expressions with lower precedence call parsers for higher-precedence operators. The grammar is LL(1) by design: one token of lookahead is always enough to decide which production to apply.
+        </p>
+
+        <pre><code><span class="token-comment">// Parser excerpt (C++)</span>
+<span class="token-type">ASTNode</span>* Parser::<span class="token-fn">parseSet</span>() {
+    <span class="token-fn">expect</span>(Token::LBRACE);
+    <span class="token-keyword">auto</span> node = <span class="token-keyword">new</span> <span class="token-type">SetNode</span>();
+    <span class="token-keyword">while</span> (!<span class="token-fn">peek</span>(Token::RBRACE)) {
+        node-><span class="token-fn">add</span>(<span class="token-fn">parseExpr</span>());
+        <span class="token-keyword">if</span> (<span class="token-fn">peek</span>(Token::COMMA)) <span class="token-fn">advance</span>();
+    }
+    <span class="token-fn">expect</span>(Token::RBRACE);
+    <span class="token-keyword">return</span> node;
+}</code></pre>
+
+        <h3>Semantic Analyzer</h3>
+        <p>
+          A tree-walk over the AST that resolves identifiers, checks set membership types, validates quantifier bindings, and ensures assert statements receive boolean-typed expressions. Type errors are reported with the source line and column.
+        </p>
+
+        <h2>What I'd Do Differently</h2>
+        <p>
+          The current pipeline stops at semantic analysis — there's no code generation stage. If I were starting Setra today I'd add an interpreter pass (tree-walking evaluator) rather than targeting machine code, since the primary use case is expression evaluation in a discrete math course context. I'd also add better error recovery in the parser — currently a parse error aborts compilation, which makes the experience poor when debugging larger Setra programs.
+        </p>
+
+        <hr />
+        <p>Read the companion post: <a href="../blog/setra-compiler.html">Writing a Compiler for Discrete Math in C++ →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__mono">
+        <a href="../projects.html">← back to projects</a> · red.systems · <a href="https://github.com/Xuinnz" target="_blank" rel="noopener">github.com/Xuinnz</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

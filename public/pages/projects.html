@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Red Gabriel Tagura</title>
+  <meta name="description" content="Projects by Red Gabriel Tagura — memory allocators, compilers, AI systems, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="../index.html" class="nav__brand">red<span>.systems</span></a>
+      <ul class="nav__links">
+        <li><a href="../index.html">/home</a></li>
+        <li><a href="projects.html">/projects</a></li>
+        <li><a href="blog.html">/blog</a></li>
+        <li><a href="../index.html#contact">/contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-hero">
+      <div class="container">
+        <a href="../index.html" class="page-hero__back">← /home</a>
+        <h1 class="page-hero__title">Projects</h1>
+        <p style="color:var(--muted);font-size:1rem;margin-top:0.75rem;">
+          Tools, systems, and research. Click any project for the full write-up.
+        </p>
+
+        <div class="page-hero__meta">
+          <span class="page-hero__meta-item">[ 6 projects ]</span>
+          <span class="page-hero__meta-item">[ Zig · C++ · Python · JS ]</span>
+        </div>
+      </div>
+    </div>
+
+    <section style="padding: 2.5rem 0;">
+      <div class="container">
+
+        <div class="projects-filter" id="filter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="systems">Systems</button>
+          <button class="filter-btn" data-filter="ai">AI</button>
+          <button class="filter-btn" data-filter="compilers">Compilers</button>
+          <button class="filter-btn" data-filter="fullstack">Full-stack</button>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+
+          <a href="projects/samm.html" class="project-card" data-tags="systems,memory,thesis">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">Python</span>
+                <span class="tag">Node.js</span>
+                <span style="color:var(--muted)">· 2026 – Present</span>
+              </div>
+              <h3 class="project-card__name">Stratified Autonomous Memory Manager</h3>
+              <p class="project-card__desc">Undergraduate thesis. Profile-guided allocator using K-Means lifetime prediction to pre-bake arena selection — targeting P99 latency and RSS reduction in memory-constrained Node.js backend services.</p>
+              <div class="project-card__tags">
+                <div class="tags">
+                  <span class="tag">Systems</span>
+                  <span class="tag">Memory</span>
+                  <span class="tag">Thesis</span>
+                  <span class="tag">Research</span>
+                </div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="projects/ambigui2.html" class="project-card" data-tags="ai,game,algorithms">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">Raylib</span>
+                <span class="tag">Expectimax</span>
+                <span style="color:var(--muted)">· 2026</span>
+              </div>
+              <h3 class="project-card__name">ambigui2 — Tetromino AI Engine</h3>
+              <p class="project-card__desc">Dual-state bitboard Tetris engine with Raylib rendering. 139k nodes/sec at depth 5 and beam width 8, 17.4ms/move. Tournament genetic algorithm evolved Dellacherie-inspired heuristic weights — 2.70× score improvement.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">AI</span><span class="tag">Game Engine</span><span class="tag">Algorithms</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="projects/zig-server.html" class="project-card" data-tags="systems,networking">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">Zig</span>
+                <span class="tag">TCP</span>
+                <span class="tag">Linux</span>
+                <span style="color:var(--muted)">· 2026</span>
+              </div>
+              <h3 class="project-card__name">Zig Server — Custom HTTP/1.1</h3>
+              <p class="project-card__desc">Zero-dependency HTTP/1.1 server from scratch. Custom TCP socket listener, hand-rolled HTTP parser, Linux epoll for non-blocking async I/O. The simplest thing that could possibly work at scale.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Systems</span><span class="tag">Networking</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="projects/gabay-med.html" class="project-card" data-tags="ai,fullstack,healthcare">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">React</span>
+                <span class="tag">React Native</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">Llama-3</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">Gabay Med — AI Healthcare Platform</h3>
+              <p class="project-card__desc">Hospital dashboard + patient mobile app. Dual-Agent RAG pipeline on Llama-3: triage agent routes to nearest qualified hospital via vector search; Auditor agent cross-validates against DOH guidelines.</p>
+              <div class="project-card__tags">
+                <div class="tags">
+                  <span class="tag">AI</span><span class="tag">Healthcare</span><span class="tag">Full-stack</span>
+                  <span class="award-badge">🏆 2nd Runner-up — PUP Hackathon</span>
+                </div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="projects/r-alloc.html" class="project-card" data-tags="systems,memory">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">C++</span>
+                <span class="tag">Python</span>
+                <span class="tag">N-API</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">r-alloc — Custom Memory Allocator</h3>
+              <p class="project-card__desc">Arena and Slab allocator strategies in C++ via mmap, bridged to Node.js through N-API to bypass V8's GC overhead. Benchmarked against glibc malloc and V8 — better latency, lower peak RSS.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Systems</span><span class="tag">Memory</span><span class="tag">C++</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+          <a href="projects/setra.html" class="project-card" data-tags="compilers,languages">
+            <div class="project-card__body">
+              <div class="project-card__eyebrow">
+                <span class="tag">C++</span>
+                <span class="tag">Compiler Design</span>
+                <span style="color:var(--muted)">· 2025</span>
+              </div>
+              <h3 class="project-card__name">Setra — Domain-Specific Language</h3>
+              <p class="project-card__desc">Full compiler pipeline from scratch in C++ — Lexer, Parser, Semantic Analyzer — for a DSL targeting discrete mathematics. No parser generators, no runtime dependencies.</p>
+              <div class="project-card__tags">
+                <div class="tags"><span class="tag">Compilers</span><span class="tag">Languages</span><span class="tag">DSL</span></div>
+              </div>
+            </div>
+            <span class="project-card__arrow">→</span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__mono">
+        red.systems · <a href="../index.html">← back home</a> · <a href="https://github.com/Xuinnz" target="_blank" rel="noopener">github.com/Xuinnz</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Filter
+    const btns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        cards.forEach(card => {
+          const tags = card.dataset.tags || '';
+          if (filter === 'all' || tags.includes(filter)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
