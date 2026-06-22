@@ -3,7 +3,7 @@ const posix = std.posix;
 const response = @import("http/response.zig");
 const mime = @import("http/mime.zig");
 
-pub const HandlerFn = *const fn (fd: posix.fd_t, allocator: std.mem.Allocator, keep_alive: bool) anyerror!void;
+pub const HandlerFn = *const fn (fd: posix.fd_t, allocator: std.mem.Allocator, keep_alive: bool) anyerror!usize;
 
 pub const Route = struct {
     method: []const u8,
@@ -11,9 +11,20 @@ pub const Route = struct {
     handler: HandlerFn,
 };
 
+pub const DispatchResult = struct {
+    status: u16,
+    bytes_sent: usize,
+};
+
+const ServeResult = struct {
+    found: bool,
+    bytes_sent: usize,
+};
+
 //Router initialize and dispatch
 pub const Router = struct {
     routes: []const Route,
+
     pub fn init(routes: []const Route) Router {
         return .{ .routes = routes };
     }
@@ -26,52 +37,54 @@ pub const Router = struct {
         fd: posix.fd_t,
         allocator: std.mem.Allocator,
         keep_alive: bool,
-    ) !bool {
+    ) !DispatchResult {
         std.debug.print("dispatch: {s} {s}\n", .{ method, path });
         // //if a request contains "..", they're try to access outside public folder, return bad request
         if (std.mem.indexOf(u8, path, "..") != null) {
             try sendError(fd, .bad_request, keep_alive);
-            return false;
+            return .{ .status = 400, .bytes_sent = 0 };
         }
 
         //we check api if the route is existing in
         for (self.routes) |route| {
             std.debug.print("checking route: {s} {s}\n", .{ route.method, route.path });
             if (std.mem.eql(u8, route.method, method) and std.mem.eql(u8, route.path, path)) {
-                try route.handler(fd, allocator, keep_alive);
-                return true;
+                const bytes = try route.handler(fd, allocator, keep_alive);
+                return .{ .status = 200, .bytes_sent = bytes };
             }
         }
         std.debug.print("no api route matched, trying static\n", .{});
 
         //if no api exist, we check files
-        const served = try serveStatic(fd, path, keep_alive);
-        std.debug.print("serveStatic returned: {}\n", .{served});
-        if (served) return true;
+        const result = try serveStatic(fd, path, keep_alive);
+        std.debug.print("serveStatic returned: {}\n", .{result});
+        if (result.found) return .{ .status = 200, .bytes_sent = result.bytes_sent };
 
         try sendError(fd, .not_found, keep_alive);
-        return false;
+        return .{ .status = 404, .bytes_sent = 0 };
     }
 };
 //serving file
-fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !bool {
+fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !ServeResult {
     var file_path_buf: [512]u8 = undefined;
     //if path is "/", we go to index.html
     const normalized = if (std.mem.eql(u8, path, "/")) "/index.html" else path;
+
     const file_path = std.fmt.bufPrint(&file_path_buf, "public{s}", .{normalized}) catch {
         std.debug.print("bufPrint failed for path: {s}\n", .{normalized});
-        return false;
+        return .{ .found = false, .bytes_sent = 0 };
     };
 
     const file = std.fs.cwd().openFile(file_path, .{}) catch |err| {
         std.debug.print("openFile failed: {} for path: {s}\n", .{ err, file_path });
-        return false;
+        return .{ .found = false, .bytes_sent = 0 };
     };
+
     defer file.close();
 
     const stat = file.stat() catch |err| {
         std.debug.print("stat failed: {}\n", .{err});
-        return false;
+        return .{ .found = false, .bytes_sent = 0 };
     };
     const file_size = stat.size;
 
@@ -90,7 +103,7 @@ fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !bool {
     //send body
     try sendFile(fd, file, file_size);
 
-    return true;
+    return .{ .found = true, .bytes_sent = file_size };
 }
 
 //instead of copying the file to user space, we just copy the file inside kernel

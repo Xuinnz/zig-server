@@ -4,6 +4,7 @@ const parser = @import("http/parser.zig");
 const response = @import("http/response.zig");
 const mime = @import("http/mime.zig");
 const router = @import("router.zig");
+const Logger = @import("logger.zig").Logger;
 
 //connection struct
 pub const Connection = struct {
@@ -11,6 +12,7 @@ pub const Connection = struct {
     buffer: [8192]u8,
     total_read: usize,
     keep_alive: bool,
+    last_active: i64,
 
     //initialize connection
     pub fn init(fd: posix.fd_t) Connection {
@@ -19,11 +21,17 @@ pub const Connection = struct {
             .buffer = undefined,
             .total_read = 0,
             .keep_alive = true,
+            .last_active = std.time.timestamp(),
         };
     }
 
     pub fn reset(self: *Connection) void {
         self.total_read = 0;
+        self.last_active = std.time.timestamp();
+    }
+
+    pub fn isTimedOut(self: *const Connection, timeout_secs: i64) bool {
+        return std.time.timestamp() - self.last_active > timeout_secs;
     }
 
     pub fn deinit(self: *Connection) void {
@@ -34,11 +42,17 @@ pub const Connection = struct {
 //handle event socket
 //if it returns true, it means that we can close the socket
 //if false, we cannot return the socket yet.
-pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator, r: *const router.Router) !bool {
+pub fn handleEvent(
+    conn: *Connection,
+    allocator: std.mem.Allocator,
+    r: *const router.Router,
+    logger: *Logger,
+) !bool {
     while (true) {
         //buffer is full,
         if (conn.total_read == conn.buffer.len) {
             try sendErrorDirect(conn.fd, .request_header_fields_too_large, false);
+            logger.log("?", "?", 431, 0, 0);
             return true;
         }
 
@@ -61,9 +75,12 @@ pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator, r: *const ro
         const req_line_end = std.mem.indexOf(u8, headers, "\r\n") orelse 0;
         const req_line = headers[0..req_line_end];
 
+        const start = std.time.milliTimestamp();
+
         //we parse the req line
         const request = parser.parseRequestLine(req_line) catch {
             try sendErrorDirect(conn.fd, .bad_request, false);
+            logger.log("?", req_line, 400, 0, 0);
             return true;
         };
 
@@ -73,7 +90,17 @@ pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator, r: *const ro
 
         std.debug.print("{s} {s} (keep-alive: {})\n", .{ request.method, request.path, keep_alive });
 
-        _ = try r.dispatch(request.method, request.path, conn.fd, allocator, keep_alive);
+        const result = try r.dispatch(request.method, request.path, conn.fd, allocator, keep_alive);
+
+        const duration: u64 = @intCast(std.time.milliTimestamp() - start);
+
+        logger.log(
+            request.method,
+            request.path,
+            result.status,
+            result.bytes_sent,
+            duration,
+        );
 
         if (!keep_alive) return true; // client wants to close
 
@@ -86,6 +113,7 @@ pub fn handleEvent(conn: *Connection, allocator: std.mem.Allocator, r: *const ro
             std.mem.copyForwards(u8, &conn.buffer, conn.buffer[consumed..conn.total_read]);
         }
         conn.total_read = remaining;
+        conn.last_active = std.time.timestamp();
         // loop back and process next request
     }
 }

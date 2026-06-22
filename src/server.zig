@@ -4,8 +4,19 @@ const linux = std.os.linux;
 const Connection = @import("connection.zig").Connection;
 const handler = @import("connection.zig");
 const router = @import("router.zig");
+const Logger = @import("logger.zig").Logger;
+
+const TIMEOUT_SECS: i64 = 30;
+const EPOLL_WAIT_MS: i32 = 5000; // check for timeouts every 5s
 
 pub fn run(port: u16, r: *const router.Router) !void {
+    //initialize logging
+    var log = try Logger.init("logs/access.log");
+    defer log.deinit();
+    std.fs.cwd().makeDir("logs") catch |err| {
+        if (err != error.PathAlreadyExists) return err;
+    };
+
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
@@ -50,7 +61,7 @@ pub fn run(port: u16, r: *const router.Router) !void {
     while (true) {
         // block until events are ready
         //this returns the number of events from epoll_fd, then copy itself to events for looping
-        const n = posix.epoll_wait(epoll_fd, &events, -1); // -1 = wait forever
+        const n = posix.epoll_wait(epoll_fd, &events, EPOLL_WAIT_MS); //wake up every 5s to check for timeout
 
         //loop through the list
         for (events[0..n]) |event| {
@@ -83,7 +94,7 @@ pub fn run(port: u16, r: *const router.Router) !void {
                 // existing connection has data
                 if (connections.get(fd)) |conn| {
                     //pass down the router
-                    const done = handler.handleEvent(conn, allocator, r) catch true;
+                    const done = handler.handleEvent(conn, allocator, r, &log) catch true;
                     if (done) {
                         // remove from epoll, cleanup
                         try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_DEL, fd, null);
@@ -92,6 +103,33 @@ pub fn run(port: u16, r: *const router.Router) !void {
                         allocator.destroy(conn);
                     }
                 }
+            }
+        }
+        //we put all the timed out clients into a 64 array
+        //TODO: if we want to make this bigger, we could allocate a heap allocator for this one.
+        var timed_out: [64]posix.fd_t = undefined;
+        var timed_out_count: usize = 0;
+
+        //iterate through the hashmap using iterator
+        var it = connections.iterator();
+        //instead of deleting on the fly, we first list the timed out fds, then delete them next
+        //this is to avoid undefined behavior
+        while (it.next()) |entry| {
+            if (timed_out_count >= timed_out.len) break;
+            //so entry is a hashmap key, then we access its ptr value, then we get the actual pointer to connection
+            if (entry.value_ptr.*.isTimedOut(TIMEOUT_SECS)) {
+                timed_out[timed_out_count] = entry.key_ptr.*;
+                timed_out_count += 1;
+            }
+        }
+        //then remove separately
+        for (timed_out[0..timed_out_count]) |fd| {
+            if (connections.get(fd)) |conn| {
+                std.debug.print("connection timeout fd={}\n", .{fd});
+                posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_DEL, fd, null) catch {};
+                _ = connections.remove(fd);
+                conn.deinit();
+                allocator.destroy(conn);
             }
         }
     }
