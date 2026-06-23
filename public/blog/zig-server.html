@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Here is a reality check: you don't always need a heavy framework. Sometimes, you just need a machine, an OS, and a lot of patience. — Red Gabriel G. Tagura" />
+  <title>Writing an HTTP/1.1 server in Zig from scratch — red.systems/blog</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/blog.css" />
+</head>
+
+<body>
+
+  <div class="browser-chrome" role="banner">
+
+    <div class="tab-bar">
+
+      <div class="wc-group" aria-hidden="true">
+        <span class="wc wc-close"></span>
+        <span class="wc wc-min"></span>
+        <span class="wc wc-max"></span>
+      </div>
+
+      <nav class="tab-nav" aria-label="Site sections">
+
+        <a href="../index.html#home" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Red Tagura</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#projects" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Projects</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#experiences" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Experiences</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#blog" class="tab-item tab-active">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Blog</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#things" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Things</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <button class="tab-new-btn" aria-hidden="true" tabindex="-1">+</button>
+      </nav>
+    </div>
+
+    <div class="toolbar">
+
+      <div class="nav-btns" aria-hidden="true">
+        <button class="toolbar-btn" onclick="history.back()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3c1.5 0 2.8.6 3.8 1.6L13 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="address-bar" role="search" aria-label="Address bar">
+        <svg class="lock-icon" width="10" height="13" viewBox="0 0 12 14" fill="none" aria-label="Secure">
+          <rect x="1" y="5.5" width="10" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="addr-host">red.systems</span>
+        <span class="addr-path">/blog/zig-server</span>
+      </div>
+
+      <div class="toolbar-right" aria-hidden="true">
+        <button class="toolbar-btn">
+          <svg width="12" height="14" viewBox="0 0 14 16" fill="none"><path d="M2 2h10v13L7 11.5 2 15V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn ham-btn">
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <div class="viewport">
+  <main id="content">
+
+    <article class="post">
+
+      <p class="breadcrumb">
+        <span>red.systems</span>
+        <span>/</span>
+        <a href="../index.html#blog" class="no-visited seg">blog</a>
+        <span>/</span>
+        <span class="seg">zig-server</span>
+      </p>
+
+      <header class="post-header">
+        <h1 class="post-title">Writing an HTTP/1.1 server in Zig from scratch</h1>
+        <div class="post-meta">
+          <time class="blog-date" datetime="2026-06-23">Jun 23, 2026</time>
+          <span class="post-meta-sep">·</span>
+          <span class="post-readtime">10 min read</span>
+          <span class="post-meta-sep">·</span>
+          <span class="post-tags">
+            <span class="badge badge-archived">Zig</span>
+            <span class="badge badge-archived">Systems</span>
+            <span class="badge badge-archived">Networking</span>
+          </span>
+        </div>
+      </header>
+
+      <hr class="section-hr" />
+
+      <div class="post-body prose-sm">
+
+        <p>
+          Here is a reality check: you don't always need a heavy framework. Sometimes, you just need a machine, an OS, and a lot of patience.
+        </p>
+
+        <p>
+          This is the story of how I replaced a framework-backed server with 600 lines of Zig, raw POSIX sockets, and Linux <code>epoll</code>. I wanted to see what the syscall boundary actually looks like, where memory gets tricky, and how a backend can run with a binary size of around 300 KB.
+        </p>
+        
+        <p>
+          Not even full documentation. Just learnings, late-night debugging, and raw code.
+        </p>
+
+        <h2>Sockets, Endianness, and File Descriptors</h2>
+
+        <p>
+          I learned all about file descriptors here. Basically, in Linux, everything is a file. I’m still wrapping my head around the philosophical implications, but practically, it just means that if I create a file descriptor, it acts like an object I can manipulate.
+        </p>
+
+        <p>
+          To create a TCP server, you need <code>posix.AF.INET</code> for IPv4 and <code>posix.SOCK.STREAM</code> for a TCP connection. TCP is a reliable "must send all data" protocol. Contrast that with UDP, which just blasts data out as fast as it can and hopes for the best (honestly, I kind of want to build a project around UDP now).
+        </p>
+
+        <p>
+          Then there's <code>nativeToBig</code>. This is where you deal with little-endian and big-endian formatting. It basically means that when we send data to a network, we must reverse the byte order because, apparently, early programmers were indecisive.
+        </p>
+        
+        <p>After that, it's the standard networking lifecycle:</p>
+        <ul>
+          <li>Bind the IP address and port.</li>
+          <li>Listen to it.</li>
+          <li>Accept the connection (which spawns a new <code>client_fd</code>).</li>
+          <li>Receive (<code>recv</code>) the data.</li>
+        </ul>
+
+        <p>
+          We read the incoming data until we hit <code>\r\n\r\n</code>—the universal signal that the HTTP request header is done.
+        </p>
+
+        <h2>The HTTP Parser & File Serving</h2>
+
+        <p>
+          Writing an HTTP parser is incredibly simple. It’s literally just string matching the methods, paths, and HTTP versions. If something is misaligned, throw an error.
+        </p>
+        
+        <p>
+          Serving files introduced me to MIME types. Browsers are dumb; you have to explicitly tell them what media type you are returning. If I return an HTML file but set the header to <code>text/plain</code>, the browser just spits my raw code onto the screen. It needs <code>text/html</code> to actually render it.
+        </p>
+        
+        <p>
+          The logic: read the file, create a response, attach the content-type, and send it back. You can also just concatenate <code>public/</code> to the requested path to easily serve your public folder.
+        </p>
+
+        <h2>Concurrency: Threads vs. Epoll</h2>
+
+        <p><strong>Multi-connections using threading:</strong> Pretty simple in theory. For every connection, you spawn a thread. Since a single thread has blocking I/O, if I don't close the client FD, it remains open and blocks other clients. The "one connection = one thread" model solves this.</p>
+        
+        <p>But it’s highly inefficient. A standard thread eats around 8MB of memory. In high concurrency, that scales terribly.</p>
+        
+        <p><strong>Multi-connections using epoll:</strong> Complicated, but worth it. You create an <code>epoll</code> FD, then manage a watchlist using <code>epoll_ctl</code> (<code>ctl_add</code> to add FDs, <code>ctl_del</code> to remove them).</p>
+        
+        <p>When data arrives, <code>epoll</code> wakes up and processes it. This means the thread only actually works when there is something to do. <code>epoll_wait</code> is basically the server sleeping until an event triggers an alarm.</p>
+        
+        <p>For every client, we need metadata to remember who they are. I used a connection struct for this, stored in a hashmap where the key is the <code>client_fd</code> and the value is the struct itself.</p>
+
+        <h2>Structured Routing & Zero-Copy</h2>
+
+        <p>
+          You need a routing table. After parsing the header, we check if the method and path exist in our API definitions (for dynamic routes that need actual functions). If there's no match, we fallback to serving static files from the public folder.
+        </p>
+        
+        <p>At first, to serve a file, I was copying the file into a buffer and sending it to POSIX.</p>
+        
+        <pre><code>Old Flow: Driver -> Kernel -> User Space -> Kernel -> Driver.</code></pre>
+        
+        <p>Then I learned about the zero-copy function: <code>sendfile</code>. With this, the kernel handles the copying directly.</p>
+        
+        <pre><code>New Flow: Driver -> Kernel -> Kernel -> Driver.</code></pre>
+        <p>Huge performance win.</p>
+
+        <h2>Security and Networking Tweaks</h2>
+        
+        <ul>
+          <li>
+            <strong>Path Traversal:</strong> I realized you could literally just send a request for <code>../.env</code> and my server would hand over my secrets. Frameworks hide this from you by sanitizing paths out of the box. My fix? If the path contains <code>..</code>, instantly return a Bad Request.
+          </li>
+          <li>
+            <strong>Keep-Alive Connections:</strong> Initially, my event handler closed the TCP socket after every single request. If a browser needed 3 files, it would do the full TCP handshake 3 separate times. Keep-alive keeps the socket open, processes subsequent requests, and saves a massive amount of overhead.
+          </li>
+          <li>
+            <strong>Cache Control:</strong> Simple enough. Cache the static assets that persist (CSS, main JS), and set "no-cache" for API routes that constantly change (like <code>/health</code>).
+          </li>
+        </ul>
+
+        <h2>Frontend</h2>
+
+        <p>
+          Don't talk to me. I hate frontend.
+        </p>
+
+        <h2>The Reality of Systems Programming</h2>
+
+        <p>
+          Implementing connection timeouts was a humbling experience. I added a <code>last_active</code> variable that updates after every request. In the event loop, <code>epoll_wait</code> checks every 5 seconds. I used an iterator to go through my hashmap of clients to clear out inactive ones.
+        </p>
+        
+        <p>
+          <strong>My first mistake:</strong> I was destroying connections while iterating through them. <em>Check entry -> Time > 30s? -> Destroy -> Continue.</em> Turns out, modifying a hashmap while iterating over it triggers undefined behavior.
+        </p>
+        
+        <p>
+          <strong>My fix:</strong> Allocate a 64-element array. Iterate first to find the connections that need to timeout, store them in the array, then iterate through the array to close them.
+        </p>
+        
+        <p>
+          <strong>My second mistake:</strong> I didn't put a bounds checker on that 64-element array. It was a stack buffer overflow waiting to happen. It ran fine locally, so I didn't check it right away.
+        </p>
+        
+        <aside class="post-aside">
+          <strong>Insight:</strong> "In software development, if it works, it's good enough. In systems programming, if it works, it's not enough."
+        </aside>
+
+        <h2>Deployment</h2>
+
+        <p>I wanted this running 24/7, so I rented a Microsoft Azure VM (b2ats v2: 1GB RAM, 2 vCPUs) in the Southeast Asia region for lower latency.</p>
+        
+        <p>The setup:</p>
+        <ul>
+          <li><strong>Security:</strong> Configured SSH keys for access and locked down the firewall to only accept ports 22 (SSH), 80 (HTTP), and 443 (HTTPS).</li>
+          <li><strong>Domain:</strong> Grabbed a domain on Namecheap and forwarded it to the Azure public IP.</li>
+          <li><strong>Reverse Proxy:</strong> Set up Caddy in front of my Zig server. Caddy handles the TLS handshake, decrypts packets, validates the HTTP, and passes the raw HTTP to my local port.</li>
+          <li><strong>Persistence:</strong> Used <code>systemctl</code> to pass control of the server binary to the OS, ensuring it stays alive even if I close my terminal.</li>
+        </ul>
+        
+        <pre><code>The Full Request Flow: 
+Access Domain -> DNS Lookup -> Azure IP -> Firewall Check -> Caddy (TLS/Validation) -> Raw HTTP to Zig port -> Systemd maintains process -> Epoll wakes up -> File Served.</code></pre>
+
+        <h2>The Results</h2>
+
+        <p><strong>wrk Benchmarks (Realistic Load):</strong></p>
+        <ul>
+          <li>1270 requests/sec</li>
+          <li>78ms average latency</li>
+          <li>763MB transferred in 30s</li>
+          <li>0 failed requests</li>
+        </ul>
+
+        <p><strong>ab Benchmarks:</strong></p>
+        <ul>
+          <li>36 requests/sec at concurrency 10</li>
+          <li>272ms average total time</li>
+          <li>75-88ms dedicated just to the TLS handshake</li>
+          <li>0 failed requests</li>
+        </ul>
+
+        <p><strong>Memory Footprint:</strong></p>
+        <ul>
+          <li>RSS of the Zig server is 0.3MB.</li>
+        </ul>
+
+        <h2>What's Next?</h2>
+        <ul>
+          <li>Updating the frontend (ugh)</li>
+          <li>Adding Gzip compression</li>
+          <li>Implementing a <code>/stats</code> endpoint</li>
+          <li>Adding HEAD method support</li>
+          <li>Graceful shutdown on SIGTERM</li>
+        </ul>
+
+      </div>
+
+      <hr class="section-hr" />
+
+      <footer class="post-footer">
+        <a href="../index.html#blog" class="no-visited post-back">← back to /blog</a>
+      </footer>
+
+    </article>
+
+  </main>
+  </div>
+  <footer class="status-bar" role="contentinfo" aria-label="Page information">
+    <span class="status-done">Done</span>
+    <span class="status-host">red.systems</span>
+    <span class="status-right">
+      <span class="status-server">Server: zig-httpd/0.1 &nbsp;·&nbsp; epoll &nbsp;·&nbsp; linux/x86_64</span>
+      <span class="status-divider" aria-hidden="true">|</span>
+      <span class="status-proto">HTTP/1.1</span>
+    </span>
+  </footer>
+
+</body>
+</html>

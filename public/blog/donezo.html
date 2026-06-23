@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="This is the story of how we built DoneZo—a high-performance weekly orchestration engine—completely from first principles." />
+  <title>DoneZo: My first ever project — red.systems/blog</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/blog.css" />
+</head>
+
+<body>
+
+  <div class="browser-chrome" role="banner">
+
+    <div class="tab-bar">
+
+      <div class="wc-group" aria-hidden="true">
+        <span class="wc wc-close"></span>
+        <span class="wc wc-min"></span>
+        <span class="wc wc-max"></span>
+      </div>
+
+      <nav class="tab-nav" aria-label="Site sections">
+
+        <a href="../index.html#home" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Red Tagura</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#projects" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Projects</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#experiences" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Experiences</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#blog" class="tab-item tab-active">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Blog</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <a href="../index.html#things" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Things</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+
+        <button class="tab-new-btn" aria-hidden="true" tabindex="-1">+</button>
+      </nav>
+    </div>
+
+    <div class="toolbar">
+
+      <div class="nav-btns" aria-hidden="true">
+        <button class="toolbar-btn" onclick="history.back()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3c1.5 0 2.8.6 3.8 1.6L13 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="address-bar" role="search" aria-label="Address bar">
+        <svg class="lock-icon" width="10" height="13" viewBox="0 0 12 14" fill="none" aria-label="Secure">
+          <rect x="1" y="5.5" width="10" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="addr-host">red.systems</span>
+        <span class="addr-path">/blog/donezo</span>
+      </div>
+
+      <div class="toolbar-right" aria-hidden="true">
+        <button class="toolbar-btn">
+          <svg width="12" height="14" viewBox="0 0 14 16" fill="none"><path d="M2 2h10v13L7 11.5 2 15V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn ham-btn">
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+  <div class="viewport">
+  <main id="content">
+
+    <article class="post">
+
+      <p class="breadcrumb">
+        <span>red.systems</span>
+        <span>/</span>
+        <a href="../index.html#blog" class="no-visited seg">blog</a>
+        <span>/</span>
+        <span class="seg">donezo</span>
+      </p>
+
+      <header class="post-header">
+        <h1 class="post-title">DoneZo: My first ever project</h1>
+        <div class="post-meta">
+          <time class="blog-date" datetime="2024-10-15">Oct 15, 2024</time>
+          <span class="post-meta-sep">·</span>
+          <span class="post-readtime">4 min read</span>
+          <span class="post-meta-sep">·</span>
+          <span class="post-tags">
+            <span class="badge badge-archived">Java</span>
+            <span class="badge badge-archived">Data Structures</span>
+            <span class="badge badge-archived">Algorithms</span>
+          </span>
+        </div>
+      </header>
+
+      <hr class="section-hr" />
+
+      <div class="post-body prose-sm">
+
+        <p>
+          Back in my second year of college, we were handed a prerequisite project for Object-Oriented Programming (OOP). The only catch? It required strict data encapsulation, and we were forced to use <code>javax.swing</code>.
+        </p>
+        
+        <p>
+          Before this project, my entire coding worldview was limited to a year of procedural C programming—basically just <code>printf()</code> statements, command-line terminal loops, and basic file handling. I didn't know what SQL was. I didn't know how a backend talked to a frontend. I had absolutely no idea how a session or an authentication system worked under the hood.
+        </p>
+
+        <p>
+          All I had was a team of stressed-out friends, a deadline, a fresh grasp of Java syntax, and pure, unadulterated logic.
+        </p>
+
+        <p>
+          This is the story of how we built <strong>DoneZo</strong>—a high-performance weekly orchestration engine—completely from first principles. It’s still the proudest project I’ve ever built.
+        </p>
+
+        <h2>1. Figuring out javax.swing</h2>
+
+        <p>
+          When we started, we were staring at a blank canvas. Our UI/UX designers pulled an absolute miracle and knocked out gorgeous Figma designs in just two days. Then, our frontend dev stepped up and seamlessly translated those designs into actual working code.
+        </p>
+
+        <p>
+          But making a weekly calendar planner in Java Swing when you’ve only ever written terminal apps is a humbling experience.
+        </p>
+
+        <p>
+          Our first massive breakthrough was just figuring out how to get visual blocks to render on the screen to represent time slots. Once we got the UI to stop throwing layout tantrums, we had to make the actual "engine" work.
+        </p>
+
+        <h2>2. The Spatial-Temporal Collision Engine</h2>
+
+        <p>
+          The core feature of DoneZo is that it auto-places your tasks into open slots in your week and instantly tells you if you have a schedule conflict. The fancy architectural term for this is a Spatial-Temporal Collision Engine.
+        </p>
+
+        <p>
+          While staring at absolutely nothing while thinking about my life decisions, I randomly realized we could model the entire 7-day week as a 2D matrix grid split into 15-minute intervals.
+        </p>
+
+        <p>
+          Instead of writing heavy, looping search algorithms to see if your tasks overlapped, we implemented an <code>O(1)</code> constant-time check. We mapped out time as a binary occupancy grid (like a chess bitboard).
+        </p>
+
+        <pre><code>         [15-min blocks]
+          00:00  00:15  00:30  00:45
+Mon [ 0 ] [ 0 ]  [ 1 ]  [ 1 ]  <-- 1 means occupied!
+Tue [ 0 ] [ 0 ]  [ 0 ]  [ 0 ]</code></pre>
+
+        <p>
+          If a user tries to drop a task into a slot, the engine performs a lightning-fast bitmask-style occupancy check. If the grid coordinate hits a true or a <code>1</code>, boom—instant conflict detection. We even had to hand-roll custom edge-case logic to handle "midnight wrap-arounds" so tasks crossing the <code>00:00</code> boundary didn't break reality.
+        </p>
+
+        <h2>3. What the f*** is an SQL</h2>
+
+        <p>
+          Because I didn't know databases existed, I had to fall back on what I knew from C: file handling.
+        </p>
+
+        <p>
+          We built a custom persistence layer out of raw flat files. But if you're saving tasks to a text file, what happens if a user types a comma or a space in their task title? It breaks your parser. To solve this parsing collision problem, my groupmate invented a specific alphanumeric delimiter: <code>a36f9a45416c</code>.
+        </p>
+
+        <p>
+          Our text files looked like a chaotic string of text separated by this random hash. It wasn't elegant, but it meant our data parsing was completely deterministic.
+        </p>
+
+        <h3>Hand-Rolling Auth and Sessions</h3>
+
+        <p>
+          For security and user isolation, I looked at file handling and thought, "Why don't we just give every user their own isolated database file?"
+        </p>
+
+        <ul>
+          <li><strong>Authentication:</strong> When you sign up, your credentials get appended to a master accounts file. When you log in, we read the file and check your inputs.</li>
+          <li><strong>Session Management:</strong> To make the application remember who was logged in when switching screens, I created a temporary session file that wrote the active user's ID to disk and read it back when needed.</li>
+        </ul>
+
+        <p>
+          I literally figured this out on the fly the night before the presentation.
+        </p>
+
+        <h2>4. Task Prioritization Algorithm</h2>
+
+        <p>
+          To prevent users from suffering from scheduling decision paralysis, we created a prioritization formula to quantify how important a task actually is.
+        </p>
+
+        <p>
+          Instead of just sorting by date, we built a multi-criteria decision model using dynamic weights:
+        </p>
+
+        <ul>
+          <li><strong>Urgency Decay:</strong> Calculated via <code>(30 − daysLeft)</code>. The closer the deadline, the heavier the score.</li>
+          <li><strong>Difficulty Weights:</strong> Hard tasks got 20 points, Medium got 10, and Easy got 5.</li>
+          <li><strong>The Quick Win:</strong> We injected a micro-task bonus to prioritize fast, easy tasks to give users a dopamine hit.</li>
+        </ul>
+
+        <p>
+          To balance cognitive load, our <code>TaskSorter</code> grouped these prioritized tasks into roughly 70-point daily chunks so users wouldn't look at their calendar and immediately want to quit.
+        </p>
+
+        <h2>Final Thoughts</h2>
+
+        <p>
+          Look, if I look back at the source code today, I know it's objectively terrible. It's janky, it ignores industry standards, and it's held together by duct tape, Java syntax, and sheer willpower.
+        </p>
+
+        <p>
+          But it taught me a lesson that no textbook ever could: software engineering depth isn't about the frameworks you know; it's about your ability to solve problems from first principles. We didn't need a heavy relational database or an external library. We just needed logic.
+        </p>
+
+        <p>
+          Shoutout to the team for surviving that Mini Hackathon and getting 2nd place. It remains my favorite project to date.
+        </p>
+
+      </div>
+
+      <hr class="section-hr" />
+
+      <footer class="post-footer">
+        <a href="../index.html#blog" class="no-visited post-back">← back to /blog</a>
+      </footer>
+
+    </article>
+
+  </main>
+  </div>
+  <footer class="status-bar" role="contentinfo" aria-label="Page information">
+    <span class="status-done">Done</span>
+    <span class="status-host">red.systems</span>
+    <span class="status-right">
+      <span class="status-server">Server: zig-httpd/0.1 &nbsp;·&nbsp; epoll &nbsp;·&nbsp; linux/x86_64</span>
+      <span class="status-divider" aria-hidden="true">|</span>
+      <span class="status-proto">HTTP/1.1</span>
+    </span>
+  </footer>
+
+</body>
+</html>

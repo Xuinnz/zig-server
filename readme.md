@@ -1,7 +1,7 @@
 # zig web server
 A zig web server created from scratch. 
 
-## tcp.zig
+## server.zig
 A TCP Server of IPv4 that creates and binds the socket. This section contains all the things I learned when coding this.
 
 ```bash 
@@ -35,7 +35,7 @@ Binding the socket address into the socket file descriptor. Basically it tells t
  This makes the file descriptor be ready to accept incoming connections. `128` means it can only have 128 connections in queue. 129th and above will get rejected (connection refuse).
 
 
-### Hanlding Client
+### connection.zig
 ```bash
 var client_addr: posix.sockaddr.storage = undefined;
 
@@ -77,6 +77,7 @@ const HttpRequest = struct {
 }; 
 ```
 this three states are currently implemented. adding more soon.
+
 
 ### Purpose
 For learning purposes only
