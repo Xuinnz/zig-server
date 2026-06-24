@@ -94,7 +94,7 @@ pub fn handleEvent(
 
         const result = try r.dispatch(request.method, request.path, conn.fd, allocator, keep_alive);
 
-        const is_error = result.status >= 400;
+        const is_error = result.status >= 500;
         stats.recordRequest(result.bytes_sent, is_error);
 
         const duration: u64 = @intCast(std.time.milliTimestamp() - start);
