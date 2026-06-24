@@ -6,7 +6,7 @@ const handler = @import("connection.zig");
 const router = @import("router.zig");
 const Logger = @import("logger.zig").Logger;
 
-const TIMEOUT_SECS: i64 = 30;
+const TIMEOUT_SECS: i64 = 60;
 const EPOLL_WAIT_MS: i32 = 5000; // check for timeouts every 5s
 
 pub fn run(port: u16, r: *const router.Router) !void {
@@ -40,7 +40,7 @@ pub fn run(port: u16, r: *const router.Router) !void {
     //bind the ip address and port
     try posix.bind(server_fd, @ptrCast(&addr), @sizeOf(posix.sockaddr.in));
     //128 queue limit
-    try posix.listen(server_fd, 128);
+    try posix.listen(server_fd, 1024);
 
     // watch server_fd for incoming connections
     var server_event = linux.epoll_event{
@@ -55,7 +55,7 @@ pub fn run(port: u16, r: *const router.Router) !void {
     defer connections.deinit();
 
     //events holder, can only process 64 at one batch
-    var events: [64]linux.epoll_event = undefined;
+    var events: [1024]linux.epoll_event = undefined;
     std.debug.print("Listening on port {d} (epoll)\n", .{port});
 
     while (true) {

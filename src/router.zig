@@ -38,7 +38,6 @@ pub const Router = struct {
         allocator: std.mem.Allocator,
         keep_alive: bool,
     ) !DispatchResult {
-        std.debug.print("dispatch: {s} {s}\n", .{ method, path });
         // //if a request contains "..", they're try to access outside public folder, return bad request
         if (std.mem.indexOf(u8, path, "..") != null) {
             try sendError(fd, .bad_request, keep_alive);
@@ -47,17 +46,14 @@ pub const Router = struct {
 
         //we check api if the route is existing in
         for (self.routes) |route| {
-            std.debug.print("checking route: {s} {s}\n", .{ route.method, route.path });
             if (std.mem.eql(u8, route.method, method) and std.mem.eql(u8, route.path, path)) {
                 const bytes = try route.handler(fd, allocator, keep_alive);
                 return .{ .status = 200, .bytes_sent = bytes };
             }
         }
-        std.debug.print("no api route matched, trying static\n", .{});
 
         //if no api exist, we check files
         const result = try serveStatic(fd, path, keep_alive);
-        std.debug.print("serveStatic returned: {}\n", .{result});
         if (result.found) return .{ .status = 200, .bytes_sent = result.bytes_sent };
 
         try sendError(fd, .not_found, keep_alive);

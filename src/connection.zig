@@ -68,7 +68,9 @@ pub fn handleEvent(
         const data = conn.buffer[0..conn.total_read];
 
         //full header
-        const header_end = std.mem.indexOf(u8, data, "\r\n\r\n") orelse continue;
+        const header_end = std.mem.indexOf(u8, data, "\r\n\r\n") orelse {
+            return false;
+        };
         const headers = data[0..header_end];
 
         //req line only (method, path, version)
@@ -87,8 +89,6 @@ pub fn handleEvent(
         //we parse the full header to check the keep-alive
         const keep_alive = std.mem.eql(u8, parser.parseConnection(headers), "keep-alive");
         conn.keep_alive = keep_alive;
-
-        std.debug.print("{s} {s} (keep-alive: {})\n", .{ request.method, request.path, keep_alive });
 
         const result = try r.dispatch(request.method, request.path, conn.fd, allocator, keep_alive);
 
