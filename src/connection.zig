@@ -5,6 +5,7 @@ const response = @import("http/response.zig");
 const mime = @import("http/mime.zig");
 const router = @import("router.zig");
 const Logger = @import("logger.zig").Logger;
+const Stats = @import("stats.zig").Stats;
 
 //connection struct
 pub const Connection = struct {
@@ -47,6 +48,7 @@ pub fn handleEvent(
     allocator: std.mem.Allocator,
     r: *const router.Router,
     logger: *Logger,
+    stats: *Stats,
 ) !bool {
     while (true) {
         //buffer is full,
@@ -91,6 +93,9 @@ pub fn handleEvent(
         conn.keep_alive = keep_alive;
 
         const result = try r.dispatch(request.method, request.path, conn.fd, allocator, keep_alive);
+
+        const is_error = result.status >= 400;
+        stats.recordRequest(result.bytes_sent, is_error);
 
         const duration: u64 = @intCast(std.time.milliTimestamp() - start);
 

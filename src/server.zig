@@ -5,11 +5,12 @@ const Connection = @import("connection.zig").Connection;
 const handler = @import("connection.zig");
 const router = @import("router.zig");
 const Logger = @import("logger.zig").Logger;
+const Stats = @import("stats.zig").Stats;
 
 const TIMEOUT_SECS: i64 = 60;
 const EPOLL_WAIT_MS: i32 = 5000; // check for timeouts every 5s
 
-pub fn run(port: u16, r: *const router.Router) !void {
+pub fn run(port: u16, r: *const router.Router, stats: *Stats) !void {
     //initialize logging
     var log = try Logger.init("logs/access.log");
     defer log.deinit();
@@ -75,6 +76,12 @@ pub fn run(port: u16, r: *const router.Router) !void {
                     std.debug.print("Accept error: {}\n", .{err});
                     continue;
                 };
+                //let's just add this to reject connections if there's more than 500
+                if (connections.count() >= 500) {
+                    posix.close(client_fd);
+                    continue;
+                }
+                stats.connectionOpened();
 
                 // allocate connection state
                 const conn = try allocator.create(Connection);
@@ -94,13 +101,14 @@ pub fn run(port: u16, r: *const router.Router) !void {
                 // existing connection has data
                 if (connections.get(fd)) |conn| {
                     //pass down the router
-                    const done = handler.handleEvent(conn, allocator, r, &log) catch true;
+                    const done = handler.handleEvent(conn, allocator, r, &log, stats) catch true;
                     if (done) {
                         // remove from epoll, cleanup
                         try posix.epoll_ctl(epoll_fd, linux.EPOLL.CTL_DEL, fd, null);
                         _ = connections.remove(fd);
                         conn.deinit();
                         allocator.destroy(conn);
+                        stats.connectionClosed();
                     }
                 }
             }
@@ -130,6 +138,7 @@ pub fn run(port: u16, r: *const router.Router) !void {
                 _ = connections.remove(fd);
                 conn.deinit();
                 allocator.destroy(conn);
+                stats.connectionClosed();
             }
         }
     }
