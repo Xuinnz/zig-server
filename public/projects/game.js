@@ -71,7 +71,7 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmpu0iwl5sy.js
+// include: /tmp/tmpj9wnvpbt.js
 
   if (!Module['expectedDataFileDownloads']) Module['expectedDataFileDownloads'] = 0;
   Module['expectedDataFileDownloads']++;
@@ -159,25 +159,7 @@ var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIR
       function assert(check, msg) {
         if (!check) throw new Error(msg);
       }
-Module['FS_createPath']("/", "assets", true, true);
-Module['FS_createPath']("/assets", "buttons", true, true);
-Module['FS_createPath']("/assets", "fonts", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 35 Light", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 45 Book Oblique", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 45 Book", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 55 Oblique", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 55 Roman", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 65 Medium Oblique", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 65 Medium", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 85 Heavy Oblique", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 85 Heavy", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 95 Black Oblique", true, true);
-Module['FS_createPath']("/assets/fonts", "Avenir LT Std 95 Black", true, true);
-Module['FS_createPath']("/assets", "images", true, true);
-Module['FS_createPath']("/assets/images", "tetromino", true, true);
-Module['FS_createPath']("/assets", "landing_page", true, true);
-Module['FS_createPath']("/assets", "vs_ai", true, true);
-Module['FS_createPath']("/assets/vs_ai", "frames", true, true);
+Module['FS_createPath']("/", "web-assets", true, true);
 
       async function processPackageData(arrayBuffer) {
         assert(arrayBuffer, 'Loading data file failed.');
@@ -213,25 +195,25 @@ Module['FS_createPath']("/assets/vs_ai", "frames", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/buttons/How2Play.png", "start": 0, "end": 16374}, {"filename": "/assets/buttons/How2Play.png:Zone.Identifier", "start": 16374, "end": 16399}, {"filename": "/assets/buttons/PlayervsAI.png", "start": 16399, "end": 33692}, {"filename": "/assets/buttons/PlayervsAI.png:Zone.Identifier", "start": 33692, "end": 33717}, {"filename": "/assets/buttons/SinglePlayer.png", "start": 33717, "end": 50726}, {"filename": "/assets/buttons/SinglePlayer.png:Zone.Identifier", "start": 50726, "end": 50751}, {"filename": "/assets/fonts/Avenir LT Std 35 Light/Avenir LT Std 35 Light.otf", "start": 50751, "end": 77991}, {"filename": "/assets/fonts/Avenir LT Std 35 Light/Avenir LT Std 35 Light.otf:Zone.Identifier", "start": 77991, "end": 78016}, {"filename": "/assets/fonts/Avenir LT Std 45 Book Oblique/Avenir LT Std 45 Book Oblique.otf", "start": 78016, "end": 106944}, {"filename": "/assets/fonts/Avenir LT Std 45 Book Oblique/Avenir LT Std 45 Book Oblique.otf:Zone.Identifier", "start": 106944, "end": 106969}, {"filename": "/assets/fonts/Avenir LT Std 45 Book/Avenir LT Std 45 Book.otf", "start": 106969, "end": 134413}, {"filename": "/assets/fonts/Avenir LT Std 45 Book/Avenir LT Std 45 Book.otf:Zone.Identifier", "start": 134413, "end": 134438}, {"filename": "/assets/fonts/Avenir LT Std 55 Oblique/Avenir LT Std 55 Oblique.otf", "start": 134438, "end": 163162}, {"filename": "/assets/fonts/Avenir LT Std 55 Oblique/Avenir LT Std 55 Oblique.otf:Zone.Identifier", "start": 163162, "end": 163187}, {"filename": "/assets/fonts/Avenir LT Std 55 Roman/Avenir LT Std 55 Roman.otf", "start": 163187, "end": 190363}, {"filename": "/assets/fonts/Avenir LT Std 55 Roman/Avenir LT Std 55 Roman.otf:Zone.Identifier", "start": 190363, "end": 190388}, {"filename": "/assets/fonts/Avenir LT Std 65 Medium Oblique/Avenir LT Std 65 Medium Oblique.otf", "start": 190388, "end": 219308}, {"filename": "/assets/fonts/Avenir LT Std 65 Medium Oblique/Avenir LT Std 65 Medium Oblique.otf:Zone.Identifier", "start": 219308, "end": 219333}, {"filename": "/assets/fonts/Avenir LT Std 65 Medium/Avenir LT Std 65 Medium.otf", "start": 219333, "end": 246597}, {"filename": "/assets/fonts/Avenir LT Std 65 Medium/Avenir LT Std 65 Medium.otf:Zone.Identifier", "start": 246597, "end": 246622}, {"filename": "/assets/fonts/Avenir LT Std 85 Heavy Oblique/Avenir LT Std 85 Heavy Oblique.otf", "start": 246622, "end": 275474}, {"filename": "/assets/fonts/Avenir LT Std 85 Heavy Oblique/Avenir LT Std 85 Heavy Oblique.otf:Zone.Identifier", "start": 275474, "end": 275499}, {"filename": "/assets/fonts/Avenir LT Std 85 Heavy/Avenir LT Std 85 Heavy.otf", "start": 275499, "end": 303139}, {"filename": "/assets/fonts/Avenir LT Std 85 Heavy/Avenir LT Std 85 Heavy.otf:Zone.Identifier", "start": 303139, "end": 303164}, {"filename": "/assets/fonts/Avenir LT Std 95 Black Oblique/Avenir LT Std 95 Black Oblique.otf", "start": 303164, "end": 332340}, {"filename": "/assets/fonts/Avenir LT Std 95 Black Oblique/Avenir LT Std 95 Black Oblique.otf:Zone.Identifier", "start": 332340, "end": 332365}, {"filename": "/assets/fonts/Avenir LT Std 95 Black/Avenir LT Std 95 Black.otf", "start": 332365, "end": 360277}, {"filename": "/assets/fonts/Avenir LT Std 95 Black/Avenir LT Std 95 Black.otf:Zone.Identifier", "start": 360277, "end": 360302}, {"filename": "/assets/fonts/readme.html", "start": 360302, "end": 364946}, {"filename": "/assets/fonts/readme.html:Zone.Identifier", "start": 364946, "end": 364971}, {"filename": "/assets/images/game_board.png", "start": 364971, "end": 786317}, {"filename": "/assets/images/game_board.png:Zone.Identifier", "start": 786317, "end": 786342}, {"filename": "/assets/images/hold_block.png", "start": 786342, "end": 822718}, {"filename": "/assets/images/hold_block.png:Zone.Identifier", "start": 822718, "end": 822743}, {"filename": "/assets/images/next_block.png", "start": 822743, "end": 835212}, {"filename": "/assets/images/next_block.png:Zone.Identifier", "start": 835212, "end": 835237}, {"filename": "/assets/images/single_player.gif", "start": 835237, "end": 3611439}, {"filename": "/assets/images/single_player.gif:Zone.Identifier", "start": 3611439, "end": 3611464}, {"filename": "/assets/images/single_player_bg.gif", "start": 3611464, "end": 5872809}, {"filename": "/assets/images/single_player_bg.gif:Zone.Identifier", "start": 5872809, "end": 5872834}, {"filename": "/assets/images/tetromino/group_1.png:Zone.Identifier", "start": 5872834, "end": 5872859}, {"filename": "/assets/images/tetromino/i.png", "start": 5872859, "end": 5877248}, {"filename": "/assets/images/tetromino/i.png:Zone.Identifier", "start": 5877248, "end": 5877273}, {"filename": "/assets/images/tetromino/j.png", "start": 5877273, "end": 5881051}, {"filename": "/assets/images/tetromino/j.png:Zone.Identifier", "start": 5881051, "end": 5881076}, {"filename": "/assets/images/tetromino/l.png", "start": 5881076, "end": 5884646}, {"filename": "/assets/images/tetromino/l.png:Zone.Identifier", "start": 5884646, "end": 5884671}, {"filename": "/assets/images/tetromino/o.png", "start": 5884671, "end": 5887904}, {"filename": "/assets/images/tetromino/o.png:Zone.Identifier", "start": 5887904, "end": 5887929}, {"filename": "/assets/images/tetromino/s.png", "start": 5887929, "end": 5890525}, {"filename": "/assets/images/tetromino/s.png:Zone.Identifier", "start": 5890525, "end": 5890550}, {"filename": "/assets/images/tetromino/t.png", "start": 5890550, "end": 5893788}, {"filename": "/assets/images/tetromino/t.png:Zone.Identifier", "start": 5893788, "end": 5893813}, {"filename": "/assets/images/tetromino/z.png", "start": 5893813, "end": 5896704}, {"filename": "/assets/images/vs_ai.gif", "start": 5896704, "end": 8645253}, {"filename": "/assets/images/vs_ai.gif:Zone.Identifier", "start": 8645253, "end": 8645278}, {"filename": "/assets/images/vs_ai_bg.gif", "start": 8645278, "end": 10960435}, {"filename": "/assets/images/vs_ai_bg.gif:Zone.Identifier", "start": 10960435, "end": 10960460}, {"filename": "/assets/landing_page/Main_page.noh2p (Mockup).png:Zone.Identifier", "start": 10960460, "end": 10960485}, {"filename": "/assets/landing_page/[1] Background.Final.png:Zone.Identifier", "start": 10960485, "end": 10960510}, {"filename": "/assets/landing_page/difficulty_page.png", "start": 10960510, "end": 11016612}, {"filename": "/assets/landing_page/lading_page_bg.png", "start": 11016612, "end": 11167293}, {"filename": "/assets/landing_page/main_page.png", "start": 11167293, "end": 11414124}, {"filename": "/assets/landing_page/resized_main_page.png", "start": 11414124, "end": 11521481}, {"filename": "/assets/vs_ai/block.png", "start": 11521481, "end": 11557857}, {"filename": "/assets/vs_ai/frames/frame_000_delay-0.79s.gif", "start": 11557857, "end": 12104408}, {"filename": "/assets/vs_ai/frames/frame_001_delay-0.04s.gif", "start": 12104408, "end": 12650850}, {"filename": "/assets/vs_ai/frames/frame_002_delay-0.04s.gif", "start": 12650850, "end": 13198309}, {"filename": "/assets/vs_ai/frames/frame_003_delay-0.04s.gif", "start": 13198309, "end": 13747214}, {"filename": "/assets/vs_ai/frames/frame_004_delay-0.04s.gif", "start": 13747214, "end": 14296786}, {"filename": "/assets/vs_ai/frames/frame_005_delay-0.04s.gif", "start": 14296786, "end": 14846689}, {"filename": "/assets/vs_ai/frames/frame_006_delay-0.04s.gif", "start": 14846689, "end": 15397489}, {"filename": "/assets/vs_ai/frames/frame_007_delay-0.04s.gif", "start": 15397489, "end": 15948803}, {"filename": "/assets/vs_ai/frames/frame_008_delay-0.04s.gif", "start": 15948803, "end": 16500980}, {"filename": "/assets/vs_ai/frames/frame_009_delay-0.04s.gif", "start": 16500980, "end": 17053275}, {"filename": "/assets/vs_ai/frames/frame_010_delay-0.04s.gif", "start": 17053275, "end": 17612334}, {"filename": "/assets/vs_ai/frames/frame_011_delay-0.04s.gif", "start": 17612334, "end": 18170066}, {"filename": "/assets/vs_ai/frames/frame_012_delay-0.04s.gif", "start": 18170066, "end": 18727533}, {"filename": "/assets/vs_ai/frames/frame_013_delay-0.04s.gif", "start": 18727533, "end": 19283864}, {"filename": "/assets/vs_ai/frames/frame_014_delay-0.04s.gif", "start": 19283864, "end": 19841176}, {"filename": "/assets/vs_ai/frames/frame_015_delay-0.04s.gif", "start": 19841176, "end": 20397879}, {"filename": "/assets/vs_ai/frames/frame_016_delay-0.04s.gif", "start": 20397879, "end": 20954618}, {"filename": "/assets/vs_ai/frames/frame_017_delay-0.04s.gif", "start": 20954618, "end": 21510531}, {"filename": "/assets/vs_ai/frames/frame_018_delay-0.04s.gif", "start": 21510531, "end": 22063272}, {"filename": "/assets/vs_ai/frames/frame_019_delay-0.04s.gif", "start": 22063272, "end": 22616677}, {"filename": "/assets/vs_ai/frames/frame_020_delay-0.88s.gif", "start": 22616677, "end": 23170419}, {"filename": "/assets/vs_ai/frames/frame_021_delay-0.04s.gif", "start": 23170419, "end": 23724161}, {"filename": "/assets/vs_ai/frames/frame_022_delay-0.04s.gif", "start": 23724161, "end": 24280932}, {"filename": "/assets/vs_ai/frames/frame_023_delay-0.04s.gif", "start": 24280932, "end": 24837740}, {"filename": "/assets/vs_ai/frames/frame_024_delay-0.04s.gif", "start": 24837740, "end": 25402256}, {"filename": "/assets/vs_ai/frames/frame_025_delay-0.04s.gif", "start": 25402256, "end": 25972300}, {"filename": "/assets/vs_ai/frames/frame_026_delay-0.04s.gif", "start": 25972300, "end": 26546631}, {"filename": "/assets/vs_ai/frames/frame_027_delay-0.04s.gif", "start": 26546631, "end": 27122009}, {"filename": "/assets/vs_ai/frames/frame_028_delay-0.04s.gif", "start": 27122009, "end": 27697516}, {"filename": "/assets/vs_ai/frames/frame_029_delay-0.04s.gif", "start": 27697516, "end": 28273844}, {"filename": "/assets/vs_ai/frames/frame_030_delay-0.04s.gif", "start": 28273844, "end": 28851238}, {"filename": "/assets/vs_ai/frames/frame_031_delay-0.04s.gif", "start": 28851238, "end": 29431108}, {"filename": "/assets/vs_ai/frames/frame_032_delay-0.04s.gif", "start": 29431108, "end": 30011472}, {"filename": "/assets/vs_ai/frames/frame_033_delay-0.04s.gif", "start": 30011472, "end": 30596987}, {"filename": "/assets/vs_ai/frames/frame_034_delay-0.04s.gif", "start": 30596987, "end": 31183945}, {"filename": "/assets/vs_ai/frames/frame_035_delay-0.04s.gif", "start": 31183945, "end": 31771793}, {"filename": "/assets/vs_ai/frames/frame_036_delay-0.04s.gif", "start": 31771793, "end": 32360007}, {"filename": "/assets/vs_ai/frames/frame_037_delay-0.04s.gif", "start": 32360007, "end": 32947745}, {"filename": "/assets/vs_ai/frames/frame_038_delay-0.04s.gif", "start": 32947745, "end": 33535553}, {"filename": "/assets/vs_ai/frames/frame_039_delay-0.04s.gif", "start": 33535553, "end": 34123648}, {"filename": "/assets/vs_ai/frames/frame_040_delay-0.92s.gif", "start": 34123648, "end": 34711962}, {"filename": "/assets/vs_ai/frames/frame_041_delay-0.04s.gif", "start": 34711962, "end": 35300677}, {"filename": "/assets/vs_ai/frames/frame_042_delay-0.04s.gif", "start": 35300677, "end": 35889839}, {"filename": "/assets/vs_ai/frames/frame_043_delay-0.04s.gif", "start": 35889839, "end": 36479561}, {"filename": "/assets/vs_ai/frames/frame_044_delay-0.04s.gif", "start": 36479561, "end": 37070147}, {"filename": "/assets/vs_ai/frames/frame_045_delay-0.04s.gif", "start": 37070147, "end": 37660910}, {"filename": "/assets/vs_ai/frames/frame_046_delay-0.04s.gif", "start": 37660910, "end": 38251641}, {"filename": "/assets/vs_ai/frames/frame_047_delay-0.04s.gif", "start": 38251641, "end": 38842518}, {"filename": "/assets/vs_ai/frames/frame_048_delay-0.04s.gif", "start": 38842518, "end": 39434170}, {"filename": "/assets/vs_ai/frames/frame_049_delay-0.04s.gif", "start": 39434170, "end": 40025696}, {"filename": "/assets/vs_ai/frames/frame_050_delay-0.04s.gif", "start": 40025696, "end": 40618293}, {"filename": "/assets/vs_ai/frames/frame_051_delay-0.04s.gif", "start": 40618293, "end": 41210888}, {"filename": "/assets/vs_ai/frames/frame_052_delay-0.04s.gif", "start": 41210888, "end": 41805035}, {"filename": "/assets/vs_ai/frames/frame_053_delay-0.04s.gif", "start": 41805035, "end": 42399240}, {"filename": "/assets/vs_ai/frames/frame_054_delay-0.04s.gif", "start": 42399240, "end": 42993868}, {"filename": "/assets/vs_ai/frames/frame_055_delay-0.04s.gif", "start": 42993868, "end": 43590228}, {"filename": "/assets/vs_ai/frames/frame_056_delay-0.04s.gif", "start": 43590228, "end": 44186531}, {"filename": "/assets/vs_ai/frames/frame_057_delay-0.04s.gif", "start": 44186531, "end": 44783767}, {"filename": "/assets/vs_ai/frames/frame_058_delay-0.04s.gif", "start": 44783767, "end": 45380494}, {"filename": "/assets/vs_ai/frames/frame_059_delay-0.88s.gif", "start": 45380494, "end": 45977150}, {"filename": "/assets/vs_ai/frames/frame_060_delay-0.04s.gif", "start": 45977150, "end": 46573924}, {"filename": "/assets/vs_ai/frames/frame_061_delay-0.04s.gif", "start": 46573924, "end": 47171802}, {"filename": "/assets/vs_ai/frames/frame_062_delay-0.04s.gif", "start": 47171802, "end": 47769138}, {"filename": "/assets/vs_ai/frames/frame_063_delay-0.04s.gif", "start": 47769138, "end": 48366219}, {"filename": "/assets/vs_ai/frames/frame_064_delay-0.04s.gif", "start": 48366219, "end": 48964326}, {"filename": "/assets/vs_ai/frames/frame_065_delay-0.04s.gif", "start": 48964326, "end": 49561707}, {"filename": "/assets/vs_ai/frames/frame_066_delay-0.04s.gif", "start": 49561707, "end": 50158928}, {"filename": "/assets/vs_ai/frames/frame_067_delay-0.04s.gif", "start": 50158928, "end": 50756382}, {"filename": "/assets/vs_ai/frames/frame_068_delay-0.04s.gif", "start": 50756382, "end": 51353624}, {"filename": "/assets/vs_ai/frames/frame_069_delay-0.04s.gif", "start": 51353624, "end": 51950827}, {"filename": "/assets/vs_ai/frames/frame_070_delay-0.04s.gif", "start": 51950827, "end": 52547884}, {"filename": "/assets/vs_ai/frames/frame_071_delay-0.04s.gif", "start": 52547884, "end": 53145353}, {"filename": "/assets/vs_ai/frames/frame_072_delay-0.04s.gif", "start": 53145353, "end": 53742563}, {"filename": "/assets/vs_ai/frames/frame_073_delay-0.04s.gif", "start": 53742563, "end": 54339652}, {"filename": "/assets/vs_ai/frames/frame_074_delay-0.04s.gif", "start": 54339652, "end": 54936959}, {"filename": "/assets/vs_ai/frames/frame_075_delay-0.04s.gif", "start": 54936959, "end": 55534205}, {"filename": "/assets/vs_ai/frames/frame_076_delay-0.04s.gif", "start": 55534205, "end": 56131156}, {"filename": "/assets/vs_ai/frames/frame_077_delay-0.04s.gif", "start": 56131156, "end": 56727957}, {"filename": "/assets/vs_ai/frames/frame_078_delay-0.04s.gif", "start": 56727957, "end": 57324787}, {"filename": "/assets/vs_ai/frames/frame_079_delay-0.88s.gif", "start": 57324787, "end": 57921719}, {"filename": "/assets/vs_ai/frames/frame_080_delay-0.04s.gif", "start": 57921719, "end": 58518553}, {"filename": "/assets/vs_ai/frames/frame_081_delay-0.04s.gif", "start": 58518553, "end": 59115768}, {"filename": "/assets/vs_ai/frames/frame_082_delay-0.04s.gif", "start": 59115768, "end": 59715369}, {"filename": "/assets/vs_ai/frames/frame_083_delay-0.04s.gif", "start": 59715369, "end": 60316362}, {"filename": "/assets/vs_ai/frames/frame_084_delay-0.04s.gif", "start": 60316362, "end": 60918231}, {"filename": "/assets/vs_ai/frames/frame_085_delay-0.04s.gif", "start": 60918231, "end": 61521155}, {"filename": "/assets/vs_ai/frames/frame_086_delay-0.04s.gif", "start": 61521155, "end": 62125406}, {"filename": "/assets/vs_ai/frames/frame_087_delay-0.04s.gif", "start": 62125406, "end": 62731628}, {"filename": "/assets/vs_ai/frames/frame_088_delay-0.04s.gif", "start": 62731628, "end": 63338302}, {"filename": "/assets/vs_ai/frames/frame_089_delay-0.04s.gif", "start": 63338302, "end": 63945079}, {"filename": "/assets/vs_ai/frames/frame_090_delay-0.04s.gif", "start": 63945079, "end": 64552317}, {"filename": "/assets/vs_ai/frames/frame_091_delay-0.04s.gif", "start": 64552317, "end": 65159634}, {"filename": "/assets/vs_ai/frames/frame_092_delay-0.04s.gif", "start": 65159634, "end": 65767281}, {"filename": "/assets/vs_ai/frames/frame_093_delay-0.04s.gif", "start": 65767281, "end": 66375248}, {"filename": "/assets/vs_ai/frames/frame_094_delay-0.04s.gif", "start": 66375248, "end": 66982959}, {"filename": "/assets/vs_ai/frames/frame_095_delay-0.04s.gif", "start": 66982959, "end": 67590687}, {"filename": "/assets/vs_ai/frames/frame_096_delay-0.04s.gif", "start": 67590687, "end": 68198726}, {"filename": "/assets/vs_ai/frames/frame_097_delay-0.04s.gif", "start": 68198726, "end": 68805990}, {"filename": "/assets/vs_ai/frames/frame_098_delay-0.04s.gif", "start": 68805990, "end": 69413406}, {"filename": "/assets/vs_ai/frames/frame_099_delay-0.88s.gif", "start": 69413406, "end": 69959549}, {"filename": "/assets/vs_ai/game_board.png", "start": 69959549, "end": 70380895}, {"filename": "/assets/vs_ai/player_ai_bg.gif", "start": 70380895, "end": 72876853}], "remote_package_size": 72876853});
+    loadPackage({"files": [{"filename": "/web-assets/block.png", "start": 0, "end": 36376}, {"filename": "/web-assets/difficulty_page.png", "start": 36376, "end": 92478}, {"filename": "/web-assets/resized_main_page.png", "start": 92478, "end": 199835}], "remote_package_size": 199835});
 
   })();
 
-// end include: /tmp/tmpu0iwl5sy.js
-// include: /tmp/tmp1wozqs_7.js
+// end include: /tmp/tmpj9wnvpbt.js
+// include: /tmp/tmpbf6hsci8.js
 
     // All the pre-js content up to here must remain later on, we need to run
     // it.
     if ((typeof ENVIRONMENT_IS_WASM_WORKER != 'undefined' && ENVIRONMENT_IS_WASM_WORKER) || (typeof ENVIRONMENT_IS_PTHREAD != 'undefined' && ENVIRONMENT_IS_PTHREAD) || (typeof ENVIRONMENT_IS_AUDIO_WORKLET != 'undefined' && ENVIRONMENT_IS_AUDIO_WORKLET)) Module['preRun'] = [];
     var necessaryPreJSTasks = Module['preRun'].slice();
-  // end include: /tmp/tmp1wozqs_7.js
-// include: /tmp/tmpgwm_46ge.js
+  // end include: /tmp/tmpbf6hsci8.js
+// include: /tmp/tmpza3uzbik.js
 
     if (!Module['preRun']) throw 'Module.preRun should exist because file support used it; did a pre-js delete it?';
     necessaryPreJSTasks.forEach((task) => {
       if (Module['preRun'].indexOf(task) < 0) throw 'All preRun tasks that exist before user pre-js code should remain after; did you replace Module or modify Module.preRun?';
     });
-  // end include: /tmp/tmpgwm_46ge.js
+  // end include: /tmp/tmpza3uzbik.js
 
 
 var programArgs = [];
@@ -9550,49 +9532,49 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('onCOSStore');
 }
 var ASM_CONSTS = {
-  92102: () => { if (document.fullscreenElement) return 1; },  
- 92148: () => { return Module.canvas.width; },  
- 92180: () => { return parseInt(Module.canvas.style.width); },  
- 92228: () => { document.exitFullscreen(); },  
- 92255: () => { setTimeout(function(){ Module.requestFullscreen(false, false); }, 100); },  
- 92327: () => { if (document.fullscreenElement) return 1; },  
- 92373: () => { return Module.canvas.width; },  
- 92405: () => { return screen.width; },  
- 92430: () => { document.exitFullscreen(); },  
- 92457: ($0) => { const canvasId = UTF8ToString($0); setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { document.querySelector(canvasId).style.width="unset"; }, 100); }, 100); },  
- 92651: () => { return window.innerWidth; },  
- 92677: () => { return window.innerHeight; },  
- 92704: () => { if (document.fullscreenElement) return 1; },  
- 92750: () => { return Module.canvas.width; },  
- 92782: () => { return parseInt(Module.canvas.style.width); },  
- 92830: () => { if (document.fullscreenElement) return 1; },  
- 92876: () => { return Module.canvas.width; },  
- 92908: () => { return screen.width; },  
- 92933: () => { return window.innerWidth; },  
- 92959: () => { return window.innerHeight; },  
- 92986: () => { if (document.fullscreenElement) return 1; },  
- 93032: () => { return Module.canvas.width; },  
- 93064: () => { return screen.width; },  
- 93089: () => { document.exitFullscreen(); },  
- 93116: () => { if (document.fullscreenElement) return 1; },  
- 93162: () => { return Module.canvas.width; },  
- 93194: () => { return parseInt(Module.canvas.style.width); },  
- 93242: () => { document.exitFullscreen(); },  
- 93269: ($0) => { Module.canvas.style.opacity = $0; },  
- 93307: () => { return screen.width; },  
- 93332: () => { return screen.height; },  
- 93358: () => { return window.screenX; },  
- 93385: () => { return window.screenY; },  
- 93412: () => { return window.devicePixelRatio; },  
- 93448: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 93501: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
- 93552: () => { Module.canvas.style.cursor = 'none'; },  
- 93589: ($0, $1, $2, $3) => { try { navigator.getGamepads()[$0].vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: $3, weakMagnitude: $1, strongMagnitude: $2 }); } catch (e) { try { navigator.getGamepads()[$0].hapticActuators[0].pulse($2, $3); } catch (e) { } } },  
- 93845: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
- 93896: () => { if (document.pointerLockElement) return 1; },  
- 93943: () => { if (document.fullscreenElement) return 1; },  
- 93989: () => { return window.innerWidth; },  
- 94015: () => { return window.innerHeight; }
+  92086: () => { if (document.fullscreenElement) return 1; },  
+ 92132: () => { return Module.canvas.width; },  
+ 92164: () => { return parseInt(Module.canvas.style.width); },  
+ 92212: () => { document.exitFullscreen(); },  
+ 92239: () => { setTimeout(function(){ Module.requestFullscreen(false, false); }, 100); },  
+ 92311: () => { if (document.fullscreenElement) return 1; },  
+ 92357: () => { return Module.canvas.width; },  
+ 92389: () => { return screen.width; },  
+ 92414: () => { document.exitFullscreen(); },  
+ 92441: ($0) => { const canvasId = UTF8ToString($0); setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { document.querySelector(canvasId).style.width="unset"; }, 100); }, 100); },  
+ 92635: () => { return window.innerWidth; },  
+ 92661: () => { return window.innerHeight; },  
+ 92688: () => { if (document.fullscreenElement) return 1; },  
+ 92734: () => { return Module.canvas.width; },  
+ 92766: () => { return parseInt(Module.canvas.style.width); },  
+ 92814: () => { if (document.fullscreenElement) return 1; },  
+ 92860: () => { return Module.canvas.width; },  
+ 92892: () => { return screen.width; },  
+ 92917: () => { return window.innerWidth; },  
+ 92943: () => { return window.innerHeight; },  
+ 92970: () => { if (document.fullscreenElement) return 1; },  
+ 93016: () => { return Module.canvas.width; },  
+ 93048: () => { return screen.width; },  
+ 93073: () => { document.exitFullscreen(); },  
+ 93100: () => { if (document.fullscreenElement) return 1; },  
+ 93146: () => { return Module.canvas.width; },  
+ 93178: () => { return parseInt(Module.canvas.style.width); },  
+ 93226: () => { document.exitFullscreen(); },  
+ 93253: ($0) => { Module.canvas.style.opacity = $0; },  
+ 93291: () => { return screen.width; },  
+ 93316: () => { return screen.height; },  
+ 93342: () => { return window.screenX; },  
+ 93369: () => { return window.screenY; },  
+ 93396: () => { return window.devicePixelRatio; },  
+ 93432: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 93485: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
+ 93536: () => { Module.canvas.style.cursor = 'none'; },  
+ 93573: ($0, $1, $2, $3) => { try { navigator.getGamepads()[$0].vibrationActuator.playEffect('dual-rumble', { startDelay: 0, duration: $3, weakMagnitude: $1, strongMagnitude: $2 }); } catch (e) { try { navigator.getGamepads()[$0].hapticActuators[0].pulse($2, $3); } catch (e) { } } },  
+ 93829: ($0) => { Module.canvas.style.cursor = UTF8ToString($0); },  
+ 93880: () => { if (document.pointerLockElement) return 1; },  
+ 93927: () => { if (document.fullscreenElement) return 1; },  
+ 93973: () => { return window.innerWidth; },  
+ 93999: () => { return window.innerHeight; }
 };
 function SetCanvasIdJs(out,outSize) { var canvasId = "#" + Module.canvas.id; stringToUTF8(canvasId, out, outSize); }
 function __asyncjs__RequestClipboardData() { return Asyncify.handleAsync(async () => { if (navigator.clipboard && window.isSecureContext) { let items = await navigator.clipboard.read(); for (const item of items) { if (item.types.includes("text/plain")) { const blob = await item.getType("text/plain"); const text = await blob.text(); window._lastClipboardString = text; } else if (item.types.find(t => t.startsWith("image/"))) { const blob = await item.getType(item.types.find(t => t.startsWith("image/"))); const bitmap = await createImageBitmap(blob); const canvas = document.createElement('canvas'); canvas.width = bitmap.width; canvas.height = bitmap.height; const ctx = canvas.getContext('2d'); ctx.drawImage(bitmap, 0, 0); const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data; window._lastImgWidth = canvas.width; window._lastImgHeight = canvas.height; window._lastImgData = imgData; } } } else console.warn("Clipboard read() requires HTTPS/Localhost"); }); }
