@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ambigui2 — a Zig-based blocks stacker game with an AI agent, built as an Intro to Modern AI coursework project." />
+  <title>ambigui2 — red.systems/projects</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/blog.css" />
+  <style>
+    /* ── Game embed wrapper ─────────────────────────────────────────── */
+    .game-embed-wrapper {
+      margin: 2rem 0;
+      border: 1px solid #2a3a2a;
+      border-radius: 4px;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+      /* Preserve the game's native aspect ratio (WIN_W / WIN_H).
+         WIN_W ≈ 906px, WIN_H ≈ 644px → ~1.407 : 1 */
+      aspect-ratio: 906 / 644;
+      width: 100%;
+    }
+
+    .game-embed-wrapper canvas,
+    .game-embed-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+    }
+
+    /* Corner decoration — subtle CRT scanline feel */
+    .game-embed-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.04) 2px,
+        rgba(0, 0, 0, 0.04) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* "LIVE" pill top-right */
+    .game-embed-label {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 2;
+      font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #3ddc60;
+      background: rgba(0, 0, 0, 0.72);
+      border: 1px solid #2a3a2a;
+      border-radius: 3px;
+      padding: 2px 7px;
+      pointer-events: none;
+    }
+
+    /* ── Tech stack grid ────────────────────────────────────────────── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.6rem;
+      margin: 1.2rem 0;
+    }
+
+    .tech-card {
+      border: 1px solid var(--border, #232323);
+      border-radius: 4px;
+      padding: 0.65rem 0.85rem;
+      background: var(--surface, #111);
+    }
+
+    .tech-card-label {
+      font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted, #555);
+      margin-bottom: 0.25rem;
+    }
+
+    .tech-card-value {
+      font-size: 0.8rem;
+      color: var(--text, #ccc);
+      line-height: 1.4;
+    }
+
+    /* ── Feature list ───────────────────────────────────────────────── */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.8rem 0 0;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.55rem;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--border, #1a1a1a);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text, #ccc);
+    }
+
+    .feature-list li:last-child {
+      border-bottom: none;
+    }
+
+    .feature-list li::before {
+      content: "·";
+      color: #3ddc60;
+      font-size: 1.1em;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ── Controls hint ──────────────────────────────────────────────── */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.6rem;
+    }
+
+    .kbd {
+      display: inline-block;
+      font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+      font-size: 10px;
+      color: var(--text, #ccc);
+      background: var(--surface, #111);
+      border: 1px solid var(--border, #333);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 2px 6px;
+      line-height: 1.6;
+    }
+
+    .controls-entry {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: var(--muted, #555);
+    }
+
+    /* ── Source link ────────────────────────────────────────────────── */
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+      font-size: 0.75rem;
+      color: var(--muted, #555);
+      text-decoration: none;
+      border: 1px solid var(--border, #232323);
+      border-radius: 3px;
+      padding: 0.3rem 0.65rem;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .source-link:hover {
+      color: #3ddc60;
+      border-color: #2a3a2a;
+    }
+
+    /* ── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .tech-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ Browser chrome (identical to blog template) ════════════════════ -->
+  <div class="browser-chrome" role="banner">
+
+    <div class="tab-bar">
+      <div class="wc-group" aria-hidden="true">
+        <span class="wc wc-close"></span>
+        <span class="wc wc-min"></span>
+        <span class="wc wc-max"></span>
+      </div>
+
+      <nav class="tab-nav" aria-label="Site sections">
+        <a href="../index.html#home" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Red Tagura</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+        <a href="../index.html#projects" class="tab-item tab-active">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Projects</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+        <a href="../index.html#experiences" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Experiences</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+        <a href="../index.html#blog" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Blog</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+        <a href="../index.html#things" class="tab-item">
+          <span class="tab-favicon" aria-hidden="true">⬡</span>
+          <span class="tab-label">Things</span>
+          <span class="tab-x" aria-hidden="true">×</span>
+        </a>
+        <button class="tab-new-btn" aria-hidden="true" tabindex="-1">+</button>
+      </nav>
+    </div>
+
+    <div class="toolbar">
+      <div class="nav-btns" aria-hidden="true">
+        <button class="toolbar-btn" onclick="history.back()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn" disabled>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8A5 5 0 1 1 8 3c1.5 0 2.8.6 3.8 1.6L13 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 3v3h-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="address-bar" role="search" aria-label="Address bar">
+        <svg class="lock-icon" width="10" height="13" viewBox="0 0 12 14" fill="none" aria-label="Secure">
+          <rect x="1" y="5.5" width="10" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M3.5 5.5V4a2.5 2.5 0 0 1 5 0v1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="addr-host">red.systems</span>
+        <span class="addr-path">/projects/ambigui2</span>
+      </div>
+
+      <div class="toolbar-right" aria-hidden="true">
+        <button class="toolbar-btn">
+          <svg width="12" height="14" viewBox="0 0 14 16" fill="none"><path d="M2 2h10v13L7 11.5 2 15V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="toolbar-btn ham-btn">
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- ════════════════════════════════════════════════════════════════════ -->
+
+  <div class="viewport">
+  <main id="content">
+    <article class="post">
+
+      <!-- Breadcrumb -->
+      <p class="breadcrumb">
+        <span>red.systems</span>
+        <span>/</span>
+        <a href="../index.html#projects" class="no-visited seg">projects</a>
+        <span>/</span>
+        <span class="seg">ambigui2</span>
+      </p>
+
+      <!-- Header -->
+      <header class="post-header">
+        <h1 class="post-title">ambigui2</h1>
+        <p class="post-subtitle">That time I made a code blocks game that has two states and I can only see the actual block when it lands.</p>
+      </header>
+
+      <hr class="section-hr" />
+
+      <!-- ── Game canvas ─────────────────────────────────────────────── -->
+      <div class="game-embed-wrapper" id="game-root">
+        <span class="game-embed-label">LIVE</span>
+
+        <canvas
+          id="canvas"
+          class="emscripten"
+          oncontextmenu="event.preventDefault()"
+          tabindex="0"
+          aria-label="ambigui2 game canvas — click to focus, then use keyboard controls"
+        ></canvas>
+      </div>
+
+      <!-- Controls hint (below canvas, above description) -->
+      <div style="margin-bottom: 1.6rem;">
+        <p style="font-size:0.72rem; color:var(--muted,#555); margin:0.5rem 0 0.5rem; font-family: ui-monospace, monospace; letter-spacing: 0.05em; text-transform: uppercase;">Controls</p>
+        <div class="controls-row">
+          <span class="controls-entry"><span class="kbd">← →</span> move</span>
+          <span class="controls-entry"><span class="kbd">↑</span> rotate</span>
+          <span class="controls-entry"><span class="kbd">↓</span> soft drop</span>
+          <span class="controls-entry"><span class="kbd">Space</span> hard drop</span>
+          <span class="controls-entry"><span class="kbd">C</span> hold</span>
+          <span class="controls-entry"><span class="kbd">R</span> menu</span>
+        </div>
+      </div>
+
+      <!-- ── Description ─────────────────────────────────────────────── -->
+      <div class="post-body prose-sm">
+
+        <p>
+          A Zig-based blocks stacker game with an AI agent, built as an Intro to Modern AI coursework project. The core twist: each falling piece exists in a <strong>probabilistic superposition of two shapes</strong> — it only collapses into a definite block when it lands.
+        </p>
+
+        <div class="things-group">
+          <h3 class="things-heading">Stack</h3>
+          <dl class="setup-dl">
+            <dt>Engine</dt>
+            <dd>Custom</dd>
+            <dt>Renderer</dt>
+            <dd>Raylib (native + WebAssembly)</dd>
+            <dt>Web target</dt>
+            <dd>Emscripten / emsdk</dd>
+            <dt>Languages</dt>
+            <dd>Zig</dd>
+          </dl>
+        </div>
+
+        <!-- Engine features -->
+        <h3 class="things-heading">ENGINE</h3>
+        <ul class="feature-list" style="--text: #292929;">
+          <li>Dual-state pieces — each move carries two simultaneous shapes with a probability weight; the active shape resolves on lock</li>
+          <li>LUT rotations with SRS clockwise wall kicks for accurate Super Rotation System behaviour</li>
+          <li>Bitboard-based board representation for fast collision detection and line-clear processing</li>
+          <li>7-bag piece randomizer with next-piece preview and hold queue</li>
+          <li>Non-linear scoring with level progression and gravity scaling</li>
+        </ul>
+
+        <div class="things-group">
+          <h3 class="things-heading">update</h3>
+          <p class="prose-sm">
+              The vs AI gameplay is not yet implemented due to it having an AI worker thread. WASM is single-threaded and my server do not have 
+              COOP/COEP response header and SharedArrayBuffer yet.
+          </p>
+        </div>
+        <!-- Source -->
+        <h2>Source</h2>
+        <p>
+          <a href="https://github.com/Xuinnz/ambigui2" class="source-link" target="_blank" rel="noopener noreferrer">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            github.com/Xuinnz/ambigui2
+          </a>
+        </p>
+
+      </div>
+
+      <hr class="section-hr" />
+
+      <footer class="post-footer">
+        <a href="../index.html#projects" class="no-visited post-back">← back to /projects</a>
+      </footer>
+
+    </article>
+  </main>
+  </div>
+
+  <!-- ═══ Status bar (identical to blog template) ═════════════════════════ -->
+  <footer class="status-bar" role="contentinfo" aria-label="Page information">
+    <span class="status-done">Done</span>
+    <span class="status-host">red.systems</span>
+    <span class="status-right">
+      <span class="status-server">ambigui2 &nbsp;·&nbsp; zig 0.15.2 &nbsp;·&nbsp; wasm32</span>
+      <span class="status-divider" aria-hidden="true">|</span>
+      <span class="status-proto">WebAssembly</span>
+    </span>
+  </footer>
+
+  <!-- ═══ Emscripten bootstrap ════════════════════════════════════════════ -->
+  <script>
+    var canvasElement = document.getElementById('canvas');
+
+    // Focus the canvas on click so keyboard events register immediately
+    canvasElement.addEventListener('click', function () {
+      canvasElement.focus();
+    });
+    canvasElement.addEventListener('keydown', function (e) {
+      const blocked = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
+      if (blocked.includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+
+
+    var Module = {
+      print(...args) {
+        console.log(...args);
+      },
+      canvas: canvasElement,
+      setStatus(text) {},
+      monitorRunDependencies(left) {}
+    };
+
+    window.onerror = window.onunhandledrejection = function () {
+      console.error('Exception thrown, see JavaScript console');
+    };
+
+    Module['onRuntimeInitialized'] = function () {
+      Module._game_init();
+      canvasElement.focus();
+      function loop() {
+        Module._updateFrame();
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    };
+  </script>
+  <script async type="text/javascript" src="game.js"></script>
+
+</body>
+</html>

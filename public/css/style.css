@@ -943,3 +943,14 @@ pre {
   background: transparent;
   padding: 0;
 }
+
+.post-subtitle {
+  margin: 0.3rem 0 0.8rem;
+  font-size: 0.85rem;
+  color: var(--muted, #555);
+  font-style: italic;
+}
+
+.feature-list li {
+  color: #1a1a1a;
+}

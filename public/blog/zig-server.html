@@ -263,19 +263,19 @@ Access Domain -> DNS Lookup -> Azure IP -> Firewall Check -> Caddy (TLS/Validati
 
         <h2>The Results</h2>
 
-        <p><strong>wrk Benchmarks (Realistic Load):</strong></p>
+        <p><strong>wrk Benchmarks (1 Thread 200 Connections):</strong></p>
         <ul>
-          <li>1270 requests/sec</li>
-          <li>78ms average latency</li>
-          <li>763MB transferred in 30s</li>
+          <li>13.10k avg requests/sec</li>
+          <li>15.49ms average latency</li>
+          <li>391129 requests in 30.04s </li>
           <li>0 failed requests</li>
         </ul>
 
-        <p><strong>ab Benchmarks:</strong></p>
+        <p><strong>wrk Benchmarks (10 Thrads 200 Connections)</strong></p>
         <ul>
-          <li>36 requests/sec at concurrency 10</li>
-          <li>272ms average total time</li>
-          <li>75-88ms dedicated just to the TLS handshake</li>
+          <li>759.66 requests/sec</li>
+          <li>33.52ms average latency</li>
+          <li>220075 requests in 30.08s</li>
           <li>0 failed requests</li>
         </ul>
 
@@ -286,9 +286,7 @@ Access Domain -> DNS Lookup -> Azure IP -> Firewall Check -> Caddy (TLS/Validati
 
         <h2>What's Next?</h2>
         <ul>
-          <li>Updating the frontend (ugh)</li>
           <li>Adding Gzip compression</li>
-          <li>Implementing a <code>/stats</code> endpoint</li>
           <li>Adding HEAD method support</li>
           <li>Graceful shutdown on SIGTERM</li>
         </ul>
