@@ -9,5 +9,7 @@ pub fn fromExtension(ext: []const u8) []const u8 {
     if (std.mem.eql(u8, ext, ".ico")) return "image/x-icon";
     if (std.mem.eql(u8, ext, ".pdf")) return "application/pdf";
     if (std.mem.eql(u8, ext, ".wasm")) return "application/wasm";
+    if (std.mem.eql(u8, ext, ".xml")) return "application/xml";
+    if (std.mem.eql(u8, ext, ".txt")) return "text/plain";
     return "application/octet-stream";
 }
