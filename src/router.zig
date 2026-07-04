@@ -44,6 +44,8 @@ pub const Router = struct {
             return .{ .status = 400, .bytes_sent = 0 };
         }
 
+        const is_head = std.mem.eql(u8, method, "HEAD");
+
         //we check api if the route is existing in
         for (self.routes) |route| {
             if (std.mem.eql(u8, route.method, method) and std.mem.eql(u8, route.path, path)) {
@@ -53,7 +55,7 @@ pub const Router = struct {
         }
 
         //if no api exist, we check files
-        const result = try serveStatic(fd, path, keep_alive);
+        const result = try serveStatic(fd, path, keep_alive, is_head);
         if (result.found) return .{ .status = 200, .bytes_sent = result.bytes_sent };
 
         try sendError(fd, .not_found, keep_alive);
@@ -61,7 +63,7 @@ pub const Router = struct {
     }
 };
 //serving file
-fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !ServeResult {
+fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool, is_head: bool) !ServeResult {
     var file_path_buf: [512]u8 = undefined;
     //if path is "/", we go to index.html
     const normalized = if (std.mem.eql(u8, path, "/")) "/index.html" else path;
@@ -97,7 +99,9 @@ fn serveStatic(fd: posix.fd_t, path: []const u8, keep_alive: bool) !ServeResult 
     _ = try posix.send(fd, fbs.getWritten(), 0);
 
     //send body
-    try sendFile(fd, file, file_size);
+    if (!is_head) {
+        try sendFile(fd, file, file_size);
+    }
 
     return .{ .found = true, .bytes_sent = file_size };
 }

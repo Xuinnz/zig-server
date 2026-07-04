@@ -24,7 +24,7 @@ pub fn parseRequestLine(line: []const u8) ParseError!HttpRequest {
 
     //TODO: add more request method
     //only GET and POST is recognized for now
-    if (!std.mem.eql(u8, method, "GET") and !std.mem.eql(u8, method, "POST")) {
+    if (!std.mem.eql(u8, method, "GET") and !std.mem.eql(u8, method, "POST") and !std.mem.eql(u8, method, "HEAD")) {
         return error.InvalidMethod;
     }
 
