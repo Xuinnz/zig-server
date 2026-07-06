@@ -19,3 +19,6 @@ zig build -Doptimize=ReleaseSafe
 
 ## Architecture
 [redgabriel.me/blog/zig-server.html]
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
