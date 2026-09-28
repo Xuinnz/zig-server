@@ -1,0 +1,261 @@
+{
+  "home": {
+    "name": "Red Gabriel G. Tagura",
+    "role": "4th Year CS Student — Systems Programming &amp; Backend Engineering",
+    "bio": [
+      "Most of my projects start with the same question: <strong>what's actually happening underneath?</strong> That curiosity drove me to engineer a zero-dependency HTTP/1.1 engine from scratch in Zig. Focusing on building lean, high-concurrency systems that run close to the metal.",
+      "Currently pursuing a Bachelor of Science in Computer Science at the <strong>Polytechnic University of the Philippines - Manila</strong>.",
+      "This site is served by a <a href=\"#things\" class=\"no-visited\">custom HTTP/1.1 server</a> written in Zig, using <code>epoll</code> and POSIX I/O directly. No libuv, no framework. The simplest thing that could possibly work at scale."
+    ],
+    "skills": [
+      {
+        "label": "Languages",
+        "list": "Python, C, C++, Zig, Java, JavaScript, PHP, Typescript"
+      },
+      {
+        "label": "Frameworks",
+        "list": "Express.js, FastAPI, Node.js, React, N-API, Raylib, Laravel, Vue.js"
+      },
+      {
+        "label": "Cloud / Infra",
+        "list": "Docker, Git, CI/CD, Vercel, Render, Microsoft Azure"
+      },
+      {
+        "label": "Databases",
+        "list": "PostgreSQL, Supabase, Redis, MySQL"
+      }
+    ],
+    "browse": [
+      {
+        "href": "#projects",
+        "path": "/projects",
+        "text": "things I've shipped"
+      },
+      {
+        "href": "#blog",
+        "path": "/blog",
+        "text": "writing on systems and infrastructure"
+      },
+      {
+        "href": "#things",
+        "path": "/things",
+        "text": "about this server, setup, and contact"
+      }
+    ]
+  },
+  "projects": {
+    "subtitle": "Systems, AI platforms, and recruitment engines. Built to solve real problems.",
+    "items": [
+      {
+        "name": "Stratified Autonomous Memory Manager",
+        "tags": "Zig · Python · Node.js · Undergraduate Thesis",
+        "desc": [
+          "Offline profile-guided allocator in Zig using <code>mmap</code> with K-Means lifetime prediction to pre-bake arena selection, targeting reduced P99 latency and peak RSS in Node.js heap within a 1 GB-constrained backend environment."
+        ],
+        "badge": "Active",
+        "link": {
+          "href": "https://github.com/Xuinnz/SAMM",
+          "label": "Source"
+        },
+        "featured": true
+      },
+      {
+        "name": "Ambigui2",
+        "tags": "Zig · Raylib · Expectimax · Genetic Algorithm",
+        "desc": [
+          "Tetromino AI engine with a dual-state bitboard in Zig and Raylib rendering — 139k nodes/sec at depth 5, beam width 8, 17.4ms/move latency. Bit-parallel collision and line-clear at sub-millisecond per-frame cost.",
+          "Evolved a 6-weight Dellacherie-inspired heuristic via tournament genetic algorithm, improving average gameplay score 2.70× across standardized seed evaluation."
+        ],
+        "badge": "2026",
+        "link": {
+          "href": "/projects/ambigui2.html",
+          "label": "PLAY"
+        }
+      },
+      {
+        "name": "Portfolio Server",
+        "tags": "Zig · Linux epoll · Caddy · Azure · Bash",
+        "desc": [
+          "Zero-dependency HTTP/1.1 server from scratch in Zig — low-level POSIX sockets with an event-driven core using Linux <code>epoll</code> for non-blocking async I/O.",
+          "Deployed on Azure VM behind a Caddy reverse proxy. Serves this site."
+        ],
+        "badge": "2026",
+        "link": {
+          "href": "https://github.com/Xuinnz/zig-server",
+          "label": "source"
+        }
+      },
+      {
+        "name": "Gabay Med",
+        "tags": "React · React Native · Supabase · Llama-3 · Vercel",
+        "desc": [
+          "Two-sided AI healthcare platform: a hospital middleware dashboard for insurance, appointments, and doctor management; and a patient mobile app for booking and service discovery.",
+          "Dual-Agent RAG pipeline on Llama-3 — triage agent routes concerns to nearest qualified hospital via vector search; Auditor agent cross-validates against DOH guidelines."
+        ],
+        "award": " 2nd Runner-up — PUP Hackathon: Uthack ang Puhunan",
+        "badge": "2025",
+        "link": {
+          "href": "https://github.com/Xuinnz/GabayMed",
+          "label": "source"
+        }
+      },
+      {
+        "name": "Tugma",
+        "tags": "FastAPI · React · Supabase · Docker",
+        "desc": [
+          "Job-matching engine with a dual-sided recruitment backend on FastAPI and Docker — independent auth flows for job-seekers and recruiters on a shared service layer.",
+          "Hash-based matching algorithm computing candidate-to-listing alignment scores in O(1), reducing match query time versus a naïve full-scan."
+        ],
+        "badge": "2025",
+        "link": {
+          "href": "https://github.com/Xuinnz",
+          "label": "source"
+        }
+      },
+      {
+        "name": "Padayon",
+        "tags": "Express.js · PostgreSQL · Vue.js · Vite",
+        "desc": [
+          "Hotel reservation engine focusing on relational database integrity, complex querying, and concurrency handling."
+        ],
+        "badge": "2025",
+        "link": {
+          "href": "https://github.com/Xuinnz/Padayon",
+          "label": "source"
+        }
+      },
+      {
+        "name": "Donezo",
+        "tags": "Java · Java Swing",
+        "desc": [
+          "Custom prioritization algorithm for time-blocking to optimize task execution order."
+        ],
+        "badge": "2025",
+        "link": {
+          "href": "https://github.com/Xuinnz/DoneZo",
+          "label": "source"
+        }
+      }
+    ]
+  },
+  "experiences": {
+    "subtitle": "Leadership experiences across organizations.",
+    "items": [
+      {
+        "role": "IT Intern",
+        "org": "NSJ Technologies",
+        "date": "08-2026 - 09-2026",
+        "datetime": "2026-03-10",
+        "points": [
+          "Developed a production website for a Quadruple-A accredited contractor, built on Vue.js and Laravel with Cloudinary CDN media pipeline and a context-aware AI chatbot with dynamic route-based context injection..",
+          "Architected a custom block-based CMS with Vue.js rich text editor and dynamic JSON block renderer — eliminating developer dependency for content updates and enabling non-technical teams to independently manage blogs, news, and media.",
+          "Optimized frontend performance through lazy loading, image quantization, API caching, and pagination — reducing page load time by 93% (3.99s → 297ms), data transfer by 91% (97.8MB → 8.7MB), and HTTP requests by 80% (209 → 42)."
+        ]
+      },
+      {
+        "role": "Backend Department Head",
+        "org": "Shift Out",
+        "date": "2025 - Present",
+        "datetime": "2026-03-10",
+        "points": [
+          "Designed and delivered Behind the Code workshop series covering backend architecture, Git branching, and CI/CD pipelines, directly upskilling 50+ members across 4 cohorts.",
+          "Established organization-wide code review standards and PR workflow policies, reducing merge conflicts and integration defects across all active tech projects."
+        ]
+      },
+      {
+        "role": "Membership Coordinator",
+        "org": "JBECP - PUP Manila",
+        "date": "2025 - Present",
+        "datetime": "2026-03-10",
+        "points": [
+          "Architected a centralized membership platform on Supabase (PostgreSQL), consolidating onboarding, attendance, and engagement tracking for 400+ active members into a single auditable data source.",
+          "Designed row-level security policies and relational schemas to enforce role-based access control across all membership lifecycle events."
+        ]
+      }
+    ]
+  },
+  "blog": {
+    "subtitle": "Writing on systems programming, low-level engineering, and the philosophy of building.",
+    "posts": [
+      {
+        "date": "June 23, 2026",
+        "datetime": "2026-06-23",
+        "title": "Writing an HTTP/1.1 server in Zig from scratch",
+        "href": "blog/zig-server.html",
+        "excerpt": "How I replaced a framework-backed server with 600 lines of Zig, raw POSIX sockets, and Linux <code>epoll</code>. What the syscall boundary looks like, where memory gets tricky, and why the binary is around 300 KB."
+      },
+      {
+        "date": "June 24, 2026",
+        "datetime": "2026-06-24",
+        "title": "My first ever project",
+        "href": "blog/donezo.html",
+        "excerpt": "The smooth journey of our group in learning the fundamentals of software development using Java Swing and Java. No backend frameworks."
+      }
+    ]
+  },
+  "things": {
+    "subtitle": "Server details, setup, and contact.",
+    "server": {
+      "paragraphs": [
+        "This site is served by a custom HTTP/1.1 server written in <a href=\"https://ziglang.org\" class=\"no-visited\" target=\"_blank\" rel=\"noopener noreferrer\">Zig 0.15.2</a>. It uses Linux <code>epoll</code> for I/O readiness and raw POSIX system calls for file serving — no libuv, no Tokio, no libevent. Single-threaded event loop. About 600 lines of Zig and a <code>build.zig</code>.",
+        "The binary is 350&nbsp;KB stripped. It speaks keep-alive, handles <code>Connection-Timeout</code> correctly, and returns a real <code>Content-Length</code> on every response. Static files only. Deployed on Microsoft Azure B2ats v2."
+      ],
+      "headers": "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 20274\nCache-Control: public, max-age=300\nConnection: keep-alive\nKeep-Alive: timeout=30, max=100"
+    },
+    "setup": [
+      {
+        "term": "Editor",
+        "value": "VS Code"
+      },
+      {
+        "term": "Domain",
+        "value": "NameCheap"
+      },
+      {
+        "term": "Machine",
+        "value": "Azure VM"
+      },
+      {
+        "term": "Languages",
+        "value": "Zig"
+      },
+      {
+        "term": "Reverse Proxy",
+        "value": "Caddy"
+      }
+    ],
+    "contact": {
+      "intro": "Email is best. Also reachable on LinkedIn and GitHub.",
+      "items": [
+        {
+          "type": "email",
+          "href": "mailto:redtagura07@gmail.com",
+          "text": "redtagura07@gmail.com"
+        },
+        {
+          "type": "phone",
+          "href": "tel:+639944262357",
+          "text": "09944262357"
+        },
+        {
+          "type": "github",
+          "href": "https://github.com/Xuinnz",
+          "text": "github.com/Xuinnz",
+          "external": true
+        },
+        {
+          "type": "linkedin",
+          "href": "https://linkedin.com/in/red-gabriel-tagura",
+          "text": "linkedin.com/in/red-gabriel-tagura",
+          "external": true
+        },
+        {
+          "type": "resume",
+          "href": "resume.pdf",
+          "text": "resume.pdf",
+          "download": true
+        }
+      ]
+    }
+  }
+}
