@@ -33,11 +33,14 @@ pub const Router = struct {
     pub fn dispatch(
         self: *const Router,
         method: []const u8,
-        path: []const u8,
+        raw_path: []const u8,
         fd: posix.fd_t,
         allocator: std.mem.Allocator,
         keep_alive: bool,
     ) !DispatchResult {
+        //drop the query string ("/css/style.css?v=2" -> "/css/style.css"), used for cache busting
+        const path = if (std.mem.indexOfScalar(u8, raw_path, '?')) |i| raw_path[0..i] else raw_path;
+
         // //if a request contains "..", they're try to access outside public folder, return bad request
         if (std.mem.indexOf(u8, path, "..") != null) {
             try sendError(fd, .bad_request, keep_alive);
