@@ -5,9 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Red Gabriel G. Tagura — CS Student, Backend Engineer. Building low-level systems, AI platforms, and recruitment engines. Served by a custom Zig HTTP/1.1 server using epoll." />
   <title>Red Tagura — red.systems</title>
-  <link rel="stylesheet" href="css/style.css?v=2" />
-  <script src="js/layout.js?v=2"></script>
-  <script src="js/index.js?v=2" defer></script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 27.3 9.5v13L16 29 4.7 22.5v-13z' fill='%23eef4fd' stroke='%230057D9' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="canonical" href="https://redgabriel.me/" />
+  <!-- link previews (LinkedIn, Slack, X…): scrapers don't run JavaScript, so this has to be static -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Red Tagura" />
+  <meta property="og:title" content="Red Tagura — red.systems" />
+  <meta property="og:description" content="Red Gabriel G. Tagura — CS Student, Backend Engineer. Building low-level systems, AI platforms, and recruitment engines. Served by a custom Zig HTTP/1.1 server using epoll." />
+  <meta property="og:url" content="https://redgabriel.me/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
+  <script src="js/layout.js?v=6"></script>
+  <script src="js/diagrams.js?v=7" defer></script>
+  <script src="js/fields.js?v=2" defer></script>
+  <script src="js/index.js?v=11" defer></script>
 </head>
 
 <body>
@@ -22,6 +33,12 @@
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
   <div class="viewport">
   <main id="content">
+    <noscript>
+      <p class="noscript">This site fills in its content with JavaScript, which is turned off here.
+        The short version: Red Gabriel G. Tagura, a CS student working on backend and systems engineering.
+        Code at <a href="https://github.com/Xuinnz">github.com/Xuinnz</a>; email
+        <a href="mailto:redtagura07@gmail.com">redtagura07@gmail.com</a>.</p>
+    </noscript>
 
 
     <!-- ── HOME ────────────────────────────── -->
@@ -70,6 +87,10 @@
         <p class="section-sub" data-slot="projects-sub"></p>
       </header>
 
+      <!-- field filter (js/fields.js): also applies to Experiences below -->
+      <div class="field-filter" data-slot="field-filter"></div>
+
+      <p class="field-empty" data-slot="projects-empty" hidden></p>
       <div class="project-grid" data-slot="projects"></div>
     </section>
 
@@ -84,6 +105,7 @@
         <p class="section-sub" data-slot="experiences-sub"></p>
       </header>
 
+      <p class="field-empty" data-slot="experiences-empty" hidden></p>
       <ol class="timeline" data-slot="experiences"></ol>
     </section>
 
@@ -112,6 +134,12 @@
         <p class="section-sub" data-slot="things-sub"></p>
       </header>
 
+      <!-- How a request reaches this page — inline SVG from js/diagrams.js -->
+      <div class="things-group">
+        <h3 class="things-heading">How a request reaches this page</h3>
+        <div data-diagram="site"></div>
+      </div>
+
       <div class="things-grid">
 
         <!-- This server -->
@@ -120,11 +148,14 @@
             <h3 class="things-heading">This server</h3>
             <div data-slot="server"></div>
 
+            <!-- filled live by js/index.js: a HEAD request to this page -->
             <div class="headers-pane card">
               <div class="panel-head">
                 <span class="eyebrow"><span class="status-dot" aria-hidden="true"></span>Response headers on this page</span>
+                <span class="eyebrow">live</span>
               </div>
-              <pre><code data-slot="resp-headers"></code></pre>
+              <pre><code data-slot="resp-headers">Reading headers…</code></pre>
+              <p class="headers-note" data-slot="resp-note"></p>
             </div>
           </div>
         </div>

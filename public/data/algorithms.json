@@ -1,0 +1,315 @@
+{
+  "intro": "Notes on the techniques behind my projects and internships: the code where it's public, what I measured, and what each one costs. A few have demos you can try.",
+  "groups": [
+    "Data structures",
+    "Search",
+    "Memory",
+    "I/O and concurrency",
+    "Databases and infrastructure"
+  ],
+  "items": [
+    {
+      "id": "bitboards",
+      "short": "Bitboards",
+      "group": "Data structures",
+      "title": "One bit per slot",
+      "used_in": [
+        "project:donezo",
+        "project:unicare",
+        "project:ambigui2"
+      ],
+      "body": [
+        "The same question shows up in three of my projects: does a new booking, or a falling piece, overlap something that's already there? The obvious answer compares it against everything already booked, so it gets slower with every booking.",
+        "Each time I answered it with a smaller grid. DoneZO kept the week as a <code>boolean[96][7]</code> array of 15-minute slots, so a check only reads the slots the task would cover. UniCare packs a doctor's whole day into one integer, bit 0 at 08:00, so a check is two bitwise operations. Ambigui2 stores each board row as a <code>u16</code>, and a single AND tests all ten columns at once."
+      ],
+      "code": [
+        {
+          "lang": "java",
+          "label": "2024 · DoneZO",
+          "path": "Workflow.java",
+          "href": "https://github.com/Xuinnz/DoneZO/blob/main/Jan29GitUpdate/src/main/java/com/mycompany/donezodraft/InternalFrames/Workflow.java#L299-L306",
+          "text": "private boolean hasConflict(int column, int startRow, int endRow) {\n    for (int row = startRow; row <= endRow; row++) {\n        if (taskConflict[row][column]) {\n            return true; // Conflict found\n        }\n    }\n    return false; // No conflict\n}"
+        },
+        {
+          "lang": "php",
+          "label": "2026 · UniCare",
+          "path": "benchmarks/scheduling.php",
+          "href": "https://github.com/Xuinnz/webdev-project/blob/main/benchmarks/scheduling.php#L70-L77",
+          "text": "function bitmaskIsFree(int $scheduleMask, array $bookingMasks, int $requestedMask): bool\n{\n    $booked = 0;\n    foreach ($bookingMasks as $mask) {\n        $booked |= $mask;\n    }\n    return (($scheduleMask & ~$booked) & $requestedMask) === $requestedMask;\n}"
+        },
+        {
+          "lang": "zig",
+          "label": "2026 · Ambigui2",
+          "path": "src/engine/physics.zig",
+          "href": "https://github.com/Xuinnz/ambigui2/blob/main/src/engine/physics.zig#L74-L75",
+          "text": "// A single bitwise AND checks all 10 columns for overlap simultaneously.\nif ((board.grid[@intCast(board_y)] & projected.on_board) != 0) return true;"
+        }
+      ],
+      "measured": [
+        "UniCare, listing one doctor's free slots with 36 bookings: 21.37 µs with interval overlap, 746 ns with the bitmask (28.6×). The interval version grows with slots × bookings; the bitmask one stays flat. PHP 8.3, median of 9 rounds, and the benchmark checks that both return the same slots.",
+        "Ambigui2: a collision check takes 3.8 ns and a line clear 16 ns (<code>zig build metrics</code>)."
+      ],
+      "limits": "It works because the grids are small and fixed: a working day fits in 64 bits, a board row in 16. Bookings that span arbitrary lengths of time, or calendars months long, need a different structure, such as an interval tree.",
+      "demo": "bitboard",
+      "diagram": null,
+      "writeup": null,
+      "fields": [
+        "systems",
+        "backend"
+      ]
+    },
+    {
+      "id": "greedy-packing",
+      "short": "Greedy packing",
+      "group": "Data structures",
+      "title": "Scoring tasks and packing them into days",
+      "used_in": [
+        "project:donezo"
+      ],
+      "body": [
+        "DoneZO's planner gives every task a score, sorts by it, and fills each day until it reaches 70 points. Hard tasks score 20, medium 10, easy 5; a task gains a point for every day closer than 30 that its deadline is; and very short tasks get a small bonus so quick wins come up early.",
+        "Filling day by day, taking each remaining task in score order if it still fits, is first-fit decreasing, the standard greedy heuristic for bin packing. Bin packing is NP-hard, so this won't always find the fewest days, but for a week of tasks it's fast and good enough."
+      ],
+      "code": [
+        {
+          "lang": "java",
+          "label": "DoneZO",
+          "path": "TaskSorter.java",
+          "href": "https://github.com/Xuinnz/DoneZO/blob/main/Jan29GitUpdate/src/main/java/com/mycompany/donezodraft/InternalFrames/TaskSorter.java#L66-L76",
+          "text": "private int calculatePriorityPoints(Task task) {\n    int difficultyPoints = calculateDifficultyPoints(task.getDifficulty());\n\n    int daysLeft = Period.between(LocalDate.now(), task.getDueDate()).getDays();\n    int urgencyPoints = Math.max(0, 30 - daysLeft);\n\n    int timeFitPoints = task.getTimeAllotted() < 5 ? 5 : 2;\n    int timeRemainingScore = Math.max(0, daysLeft);\n\n    return difficultyPoints + urgencyPoints + timeFitPoints - timeRemainingScore;\n}"
+        }
+      ],
+      "measured": [],
+      "limits": "Two things I'd fix now. <code>Period.getDays()</code> returns only the days part of a period, so a task due in one month and three days counts as three days away; it should be <code>ChronoUnit.DAYS.between</code>. And the score subtracts the days left on top of the urgency term, so an easy task with a distant deadline can score below zero.",
+      "demo": null,
+      "diagram": null,
+      "writeup": "blog/donezo.html",
+      "fields": [
+        "backend"
+      ]
+    },
+    {
+      "id": "game-tree",
+      "short": "Expectimax",
+      "group": "Search",
+      "title": "Expectimax over a piece in superposition",
+      "used_in": [
+        "project:ambigui2"
+      ],
+      "body": [
+        "In Ambigui2 every piece is two shapes at once and only collapses into one when it lands, so the AI picks a spot before it knows what it's placing. Minimax would assume the worse shape every time. Expectimax weights both outcomes by their probability instead.",
+        "Searching every placement against both outcomes several pieces deep is too slow for a game, so the search scores each placement one move ahead, keeps only the best few (the beam), and caches positions it has already scored in a transposition table. The six evaluation weights were learned by self-play, with a genetic algorithm and CMA-ES, and chosen on games the trainer never saw."
+      ],
+      "code": [
+        {
+          "lang": "zig",
+          "label": "Ambigui2",
+          "path": "src/ai/expectimax.zig",
+          "href": "https://github.com/Xuinnz/ambigui2/blob/main/src/ai/expectimax.zig#L216-L221",
+          "text": "fn chanceValue(ctx: *const Context, branches: *const Branches, plies_left: u32) f32 {\n    node_count += 1;\n    const score_a = branchValue(ctx, &branches.a, branches.prev_lines, plies_left);\n    const score_b = branchValue(ctx, &branches.b, branches.prev_lines, plies_left);\n    return (branches.prob_a * score_a) + ((1.0 - branches.prob_a) * score_b);\n}"
+        }
+      ],
+      "measured": [
+        "Hard AI: 105.4 lines per game against 43.5 before, at 8.15 ms per move against 21.7 (40 seeded games, capped at 1,000 pieces, <code>zig build bench</code>).",
+        "Letting a 2-piece search use the hold slot: 30.8 → 62.6 lines per game.",
+        "Browser build: the search runs a few candidates per frame, about 6 ms, which keeps the game at 60 fps without threads."
+      ],
+      "limits": "The old Hard mode read its third piece from the hidden random number generator, which a player can't see; the rework forbids that, so the new numbers are for an AI that only knows what you know. CMA-ES weights did better in Hard (114.8 vs 105.4 lines) but only tied where they were trained, so they aren't shipped yet.",
+      "demo": null,
+      "diagram": "expectimax",
+      "writeup": null,
+      "fields": [
+        "ai",
+        "systems"
+      ]
+    },
+    {
+      "id": "allocators",
+      "short": "Arena allocation",
+      "group": "Memory",
+      "title": "Arenas chosen by lifetime",
+      "used_in": [
+        "project:r-alloc",
+        "project:samm"
+      ],
+      "body": [
+        "Most objects a request handler allocates die young, yet a general-purpose allocator or a garbage collector still does bookkeeping for each one. r-alloc gives each lifetime its own arena on memory from <code>mmap</code>: transient objects get a bump pointer that's reset in one step, intermediate ones a slab with eight size classes from 32 bytes to 4 KB, and persistent ones stay put.",
+        "The arena is chosen by where the allocation comes from. A profiler records each call site's lifespans, a majority vote labels the site transient (under 200 ms), intermediate (under 10 s) or persistent, and the result is compiled into a C header the allocator reads. SAMM, my thesis, takes the idea further: K-means++ over log-transformed lifespans finds the groups, low-variance sites go to bump arenas and high-variance ones to slabs, and the decisions are baked into a static routing table, so the choice at allocation time is a lookup."
+      ],
+      "code": [
+        {
+          "lang": "cpp",
+          "label": "r-alloc",
+          "path": "src/arena.cpp",
+          "href": "https://github.com/Xuinnz/r-alloc/blob/main/src/arena.cpp#L45-L57",
+          "text": "void* r_arena(arena_t* arena, size_t size, uint32_t site_id){\n    // Align everything to 8 bytes minimum for safety\n    size = (size + 7) & ~7;\n\n    // STRATEGY 1: TRANSIENT (Bump Pointer)\n    if(arena->policy == LIFETIME_TRANSIENT){\n        if ((char*)arena->current + size <= (char*)arena->base + arena->capacity){\n            void* ptr = arena->current;\n            arena->current = (char*)arena->current + size;\n            arena->size += size;\n            return ptr;\n        }\n    }"
+        }
+      ],
+      "measured": [
+        "Peak RSS 74.49 MB against 132.02 MB for V8's garbage collector (−43.5%) over about 995,000 operations, with peak equal to final RSS.",
+        "Express server, 100 connections: worst-case latency 125 ms, about 30% better than V8's worst case.",
+        "Against its own first-fit base allocator, the arena path is 1.86× faster (120 ms vs 223 ms)."
+      ],
+      "limits": "These comparisons are against V8, and they cost throughput: about 16% fewer requests per second than V8, because every allocation crosses from JavaScript into C. Arenas also need sizes chosen up front, which is what SAMM's quota step is for. SAMM's own results (100 runs per condition, 1 vCPU and 1 GB) aren't in yet.",
+      "demo": "arena",
+      "diagram": null,
+      "writeup": null,
+      "fields": [
+        "systems",
+        "ai"
+      ]
+    },
+    {
+      "id": "event-loop",
+      "short": "Event-driven I/O",
+      "group": "I/O and concurrency",
+      "title": "One thread, many sockets",
+      "used_in": [
+        "project:portfolio-server"
+      ],
+      "body": [
+        "The server you're reading this from runs on one thread on a 1 GB VM. Every socket is non-blocking and registered with Linux <code>epoll</code>; the loop sleeps in <code>epoll_wait</code> until the kernel reports which sockets are ready, handles only those, and goes back to sleep. Files go out with <code>sendfile</code>, so their bytes never pass through the process.",
+        "Each pass of the loop also closes connections that have been idle for 60 seconds, and new connections are refused past 500, so a pile of idle sockets can't exhaust the box."
+      ],
+      "code": [
+        {
+          "lang": "zig",
+          "label": "zig-server",
+          "path": "src/server.zig, trimmed",
+          "href": "https://github.com/Xuinnz/zig-server/blob/main/src/server.zig#L62-L144",
+          "text": "while (true) {\n    const n = posix.epoll_wait(epoll_fd, &events, EPOLL_WAIT_MS); //wake up every 5s to check for timeout\n\n    for (events[0..n]) |event| {\n        const fd: posix.fd_t = event.data.fd;\n\n        if (fd == server_fd) {\n            // new connection incoming\n            // … accept it non-blocking, register it with EPOLL.IN | EPOLL.ET\n        } else {\n            // existing connection has data\n            if (connections.get(fd)) |conn| {\n                const done = handler.handleEvent(conn, allocator, r, &log, stats) catch true;\n                // … if done: remove it from epoll, close it, free it\n            }\n        }\n    }\n    // … then close every connection where isTimedOut(TIMEOUT_SECS)\n}"
+        }
+      ],
+      "measured": [
+        "13.1k requests/s on one thread with about 0.3 MB resident memory (wrk, 200 connections, Azure B2ats v2), from the write-up."
+      ],
+      "limits": "What I'm fixing next: a slow client can stall the whole loop, because a full send buffer makes <code>sendfile</code> retry on the spot instead of waiting for <code>EPOLLOUT</code>; and each static file waits about 40 ms, because headers and body go out as two writes and Nagle's algorithm holds the second until the client's delayed ACK. The write-up's 10-thread result (759 req/s) is still unexplained.",
+      "demo": null,
+      "diagram": "epoll",
+      "writeup": "blog/zig-server.html",
+      "fields": [
+        "systems",
+        "infra",
+        "backend"
+      ]
+    },
+    {
+      "id": "optimistic-concurrency",
+      "short": "Optimistic concurrency",
+      "group": "I/O and concurrency",
+      "title": "Optimistic concurrency and state machines",
+      "used_in": [
+        "exp:pepsico",
+        "exp:flouw"
+      ],
+      "body": [
+        "At PepsiCola, a reviewer can bulk-approve a batch of compliance records while someone else is still editing one of them. If the approval simply overwrites, it approves numbers the reviewer never saw. So the batch write only touches rows that haven't changed since the reviewer loaded them; anything edited in between is skipped and stays in review.",
+        "Flouw's checkout has the same problem with stock: two buyers can't both get the last unit. Stock is reserved in real time at checkout, and orders only move along the transitions an order state machine allows."
+      ],
+      "code": [
+        {
+          "lang": "sql",
+          "label": "the pattern, not the production query",
+          "path": null,
+          "href": null,
+          "text": "UPDATE records\n   SET status = 'approved', version = version + 1\n WHERE (id, version) IN ((101, 1), (102, 1), (103, 1));\n-- a row edited after the reviewer loaded it has a newer version, so it doesn't match"
+        }
+      ],
+      "measured": [],
+      "limits": "Optimistic checks assume conflicts are rare. When they aren't, people keep losing their work to retries, and a lock is the better tool.",
+      "demo": "occ",
+      "diagram": null,
+      "writeup": null,
+      "fields": [
+        "backend"
+      ]
+    },
+    {
+      "id": "batching",
+      "short": "Batching",
+      "group": "Databases and infrastructure",
+      "title": "Batching database round trips",
+      "used_in": [
+        "exp:pepsico"
+      ],
+      "body": [
+        "PepsiCola's bulk-approval screen used to read and write each record on its own. Each round trip to the database is cheap; two thousand of them took about 15 seconds.",
+        "I replaced them with one set-based read for the whole selection and one transactional write for all of it, four round trips in total. The Excel import got the same treatment, with up to 200 validated rows per transaction."
+      ],
+      "code": [],
+      "measured": [
+        "Bulk approval: about 2,000 → 4 database round trips; save time about 15 s → under 1 s.",
+        "1,000-record import: 6,000 → 15 database calls, about 4 min → 2 s, and admin notifications 2,000 → 10, with the per-record audit trail kept."
+      ],
+      "limits": "Bigger transactions hold locks longer and fail as a unit, so batch size is a trade-off; the import commits at most 200 rows at a time.",
+      "demo": "batching",
+      "diagram": "batching",
+      "writeup": null,
+      "fields": [
+        "backend",
+        "infra"
+      ]
+    },
+    {
+      "id": "small-box",
+      "short": "1 GB production",
+      "group": "Databases and infrastructure",
+      "title": "Production on a 1 GB box",
+      "used_in": [
+        "exp:flouw"
+      ],
+      "body": [
+        "Flouw's store runs on a single 1 GB DigitalOcean droplet. The database is SQLite in WAL mode, and Litestream streams its write-ahead log to a private R2 bucket, so if the droplet dies the database can be restored from R2.",
+        "Uploads never pass through the box: the app gives the browser a presigned URL and the file goes straight to R2, and Cloudflare resizes images on the way out. Deploys are standalone Docker images built by GitHub Actions and pulled from GHCR."
+      ],
+      "code": [],
+      "measured": [],
+      "limits": "SQLite allows one writer at a time. That fits a store this size, and it's the first thing to change if write traffic grows.",
+      "demo": null,
+      "diagram": "small-box",
+      "writeup": null,
+      "fields": [
+        "infra",
+        "backend"
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "id": "hash-matching",
+      "short": "Hash matching",
+      "title": "Hash-based matching",
+      "text": "Tugma precomputes a hash index so scoring a candidate against a listing is a lookup instead of a scan over the whole dataset.",
+      "used_in": [
+        "project:tugma"
+      ],
+      "fields": [
+        "backend"
+      ]
+    },
+    {
+      "id": "compiler",
+      "short": "Compiler pipeline",
+      "title": "A compiler front end",
+      "text": "Setra is a lexer, parser and semantic analyzer for a discrete-math language, written from scratch in C.",
+      "used_in": [
+        "project:setra"
+      ],
+      "fields": [
+        "systems"
+      ]
+    },
+    {
+      "id": "load-budgets",
+      "short": "Load budgets",
+      "title": "Load budgets",
+      "text": "Lazy loading, image quantization, asset caching and pagination took a contractor's site from 20.5 s to 2.0 s, 98.5 MB to 12 MB, and 224 requests to 93.",
+      "used_in": [
+        "exp:nsj"
+      ],
+      "fields": [
+        "web"
+      ]
+    }
+  ]
+}

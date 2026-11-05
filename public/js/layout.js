@@ -5,13 +5,16 @@
 //   <site-nav active="blog" path="/blog/zig-server" root="../"></site-nav>
 //   <site-footer server="..." proto="..."></site-footer>
 //
-// `root` is the relative path back to index.html. Omit it on index.html itself;
-// that also disables the back button, since there is nowhere to go back to.
+// `root` is the relative path back to index.html: "../" one folder down, "" for a
+// page next to it (algorithms.html). Omit it on index.html itself; that also
+// disables the back button, since there is nowhere to go back to.
 
 (function () {
+  // Tabs are sections of index.html, unless they name a `page` of their own.
   const TABS = [
     { id: 'home', label: 'Red Tagura' },
     { id: 'projects', label: 'Projects' },
+    { id: 'algorithms', label: 'Algorithms', page: 'algorithms.html' },
     { id: 'experiences', label: 'Experiences' },
     { id: 'blog', label: 'Blog' },
     { id: 'things', label: 'Things' },
@@ -27,8 +30,12 @@
     const root = el.getAttribute('root');
     const isIndex = root === null;
 
+    const href = (t) => t.page
+      ? (isIndex ? '' : root) + t.page
+      : `${isIndex ? '' : root + 'index.html'}#${t.id}`;
+
     const tabs = TABS.map((t) => `
-        <a href="${isIndex ? '' : root + 'index.html'}#${t.id}" class="tab-item${t.id === active ? ' tab-active' : ''}">
+        <a href="${href(t)}" class="tab-item${t.id === active ? ' tab-active' : ''}">
           <span class="tab-favicon" aria-hidden="true">⬡</span>
           <span class="tab-label">${t.label}</span>
           <span class="tab-x" aria-hidden="true">×</span>

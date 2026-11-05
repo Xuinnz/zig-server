@@ -44,132 +44,307 @@
     ]
   },
   "projects": {
-    "subtitle": "Systems, AI platforms, and recruitment engines. Built to solve real problems.",
+    "subtitle": "Allocators, servers, compilers, and platforms — built to solve real problems.",
     "items": [
       {
+        "id": "samm",
         "name": "Stratified Autonomous Memory Manager",
-        "tags": "Zig · Python · Node.js · Undergraduate Thesis",
-        "desc": [
-          "Offline profile-guided allocator in Zig using <code>mmap</code> with K-Means lifetime prediction to pre-bake arena selection, targeting reduced P99 latency and peak RSS in Node.js heap within a 1 GB-constrained backend environment."
-        ],
+        "subtitle": "Undergraduate Thesis",
+        "tags": "Zig · Python · Node.js",
         "badge": "Active",
-        "link": {
-          "href": "https://github.com/Xuinnz/SAMM",
-          "label": "Source"
-        },
-        "featured": true
-      },
-      {
-        "name": "Ambigui2",
-        "tags": "Zig · Raylib · Expectimax · Genetic Algorithm",
+        "featured": true,
         "desc": [
-          "Tetromino AI engine with a dual-state bitboard in Zig and Raylib rendering — 139k nodes/sec at depth 5, beam width 8, 17.4ms/move latency. Bit-parallel collision and line-clear at sub-millisecond per-frame cost.",
-          "Evolved a 6-weight Dellacherie-inspired heuristic via tournament genetic algorithm, improving average gameplay score 2.70× across standardized seed evaluation."
+          "Developing an offline profile-guided allocator in Zig using <code>mmap</code> with K-Means lifetime prediction to pre-bake arena selection, aiming to reduce P99 latency and peak RSS in the Node.js heap on 1 GB-constrained backend services."
         ],
-        "badge": "2026",
-        "link": {
-          "href": "/projects/ambigui2.html",
-          "label": "PLAY"
-        }
+        "links": [
+          {
+            "href": "https://github.com/Xuinnz/thesis-samm",
+            "label": "source"
+          }
+        ],
+        "fields": [
+          "systems",
+          "ai"
+        ]
       },
       {
-        "name": "Portfolio Server",
-        "tags": "Zig · Linux epoll · Caddy · Azure · Bash",
+        "id": "r-alloc",
+        "name": "r-alloc",
+        "subtitle": "Custom Memory Allocator",
+        "tags": "C++ · Python · N-API · mmap",
+        "badge": "2026",
         "desc": [
-          "Zero-dependency HTTP/1.1 server from scratch in Zig — low-level POSIX sockets with an event-driven core using Linux <code>epoll</code> for non-blocking async I/O.",
-          "Deployed on Azure VM behind a Caddy reverse proxy. Serves this site."
+          "Arena and slab allocators in C++ on <code>mmap</code>, chosen per call site by a small lifetime model and bridged to Node.js with N-API to bypass V8's garbage collector: 43.5% lower peak RSS than V8 (74.5 vs 132 MB over about a million operations) and about 30% lower worst-case latency, at a 16% throughput cost."
         ],
-        "badge": "2026",
-        "link": {
-          "href": "https://github.com/Xuinnz/zig-server",
-          "label": "source"
-        }
+        "links": [
+          {
+            "href": "https://github.com/Xuinnz/r-alloc",
+            "label": "source"
+          }
+        ],
+        "fields": [
+          "systems"
+        ]
       },
       {
+        "id": "gabay-med",
         "name": "Gabay Med",
+        "subtitle": "AI Healthcare Platform",
         "tags": "React · React Native · Supabase · Llama-3 · Vercel",
-        "desc": [
-          "Two-sided AI healthcare platform: a hospital middleware dashboard for insurance, appointments, and doctor management; and a patient mobile app for booking and service discovery.",
-          "Dual-Agent RAG pipeline on Llama-3 — triage agent routes concerns to nearest qualified hospital via vector search; Auditor agent cross-validates against DOH guidelines."
-        ],
-        "award": " 2nd Runner-up — PUP Hackathon: Uthack ang Puhunan",
         "badge": "2025",
-        "link": {
-          "href": "https://github.com/Xuinnz/GabayMed",
-          "label": "source"
-        }
+        "desc": [
+          "Built a two-sided platform: a hospital middleware system for insurance, appointments, and doctor management, and a patient mobile app for booking and service discovery.",
+          "Architected a Dual-Agent RAG pipeline on Llama-3: a triage agent routes concerns to the nearest qualified hospital via vector search; an Auditor agent cross-validates against DOH guidelines."
+        ],
+        "award": "2nd Runner-up of 18 teams — PUP Hackathon: Uthack ang Puhunan",
+        "links": [
+          {
+            "href": "https://github.com/Xuinnz/GabayMed",
+            "label": "source"
+          }
+        ],
+        "team": true,
+        "fields": [
+          "backend",
+          "ai",
+          "web"
+        ]
       },
       {
+        "id": "ambigui2",
+        "name": "Ambigui2",
+        "subtitle": "Quantum Tetris AI",
+        "tags": "Zig · Raylib · Expectimax · CMA-ES · Genetic Algorithm · WebAssembly",
+        "badge": "2026",
+        "desc": [
+          "Tetris in superposition: every piece is two tetrominoes at once and collapses into one when it lands. A bitboard engine in Zig (one <code>u16</code> per row) does a collision check in 3.8 ns and a line clear in 16 ns, and the search visits ~2M positions/s on one core. Runs on desktop, in a terminal, and in the browser as a ~0.5 MB WebAssembly build.",
+          "Expectimax AI with hold search, beam pruning, and a transposition table; its evaluation weights are learned by self-play with a genetic algorithm and a from-scratch CMA-ES, chosen on held-out games. The reworked Hard AI clears 105 lines per game vs 43.5 before (2.4×), at 8.2 ms per move vs 21.7 (2.7× faster)."
+        ],
+        "links": [
+          {
+            "href": "/projects/ambigui2.html",
+            "label": "play"
+          },
+          {
+            "href": "https://github.com/Xuinnz/ambigui2",
+            "label": "source"
+          }
+        ],
+        "fields": [
+          "systems",
+          "ai"
+        ]
+      },
+      {
+        "id": "portfolio-server",
+        "name": "Portfolio Server",
+        "subtitle": "Asynchronous HTTP/1.1 Engine",
+        "tags": "Zig · Linux epoll · Caddy · Azure · Bash",
+        "badge": "2026",
+        "desc": [
+          "Engineered a zero-dependency HTTP/1.1 server from scratch in Zig using POSIX sockets and a Linux <code>epoll</code> event loop for non-blocking, asynchronous I/O; deployed on an Azure VM behind a Caddy reverse proxy. It serves this site."
+        ],
+        "links": [
+          {
+            "href": "blog/zig-server.html",
+            "label": "write-up"
+          },
+          {
+            "href": "https://github.com/Xuinnz/zig-server",
+            "label": "source"
+          }
+        ],
+        "fields": [
+          "systems",
+          "infra",
+          "backend"
+        ]
+      },
+      {
+        "id": "unicare",
+        "name": "UniCare",
+        "subtitle": "Hospital Appointment & Records System",
+        "tags": "Laravel · MySQL · Alpine.js · Docker Compose",
+        "badge": "2026",
+        "desc": [
+          "Bitmask scheduling engine: each doctor-day is one 64-bit integer of 15-minute slots, so open slots are <code>schedule &amp; ~booked</code> and a conflict check is a single AND. Benchmarked against interval-overlap checks, with identical results verified: up to 28.6× faster listing a busy doctor's free slots, and 5.8–10.7× on the weekly availability page.",
+          "Patient, Doctor, and Admin portals behind role-gating middleware with guided onboarding; a normalized MySQL schema with UUID public IDs, JSON medical data, and transactional multi-step writes; containerized with Docker Compose (Nginx, PHP-FPM, MySQL)."
+        ],
+        "links": [
+          {
+            "href": "https://github.com/Xuinnz/webdev-project",
+            "label": "source"
+          }
+        ],
+        "team": true,
+        "fields": [
+          "backend",
+          "web"
+        ]
+      },
+      {
+        "id": "setra",
+        "name": "Setra",
+        "subtitle": "Domain-Specific Language",
+        "tags": "C · Compiler Design",
+        "badge": "2025",
+        "desc": [
+          "Engineered a compiler pipeline in C from scratch (Lexer, Parser, Semantic Analyzer) for a DSL targeting discrete math."
+        ],
+        "fields": [
+          "systems"
+        ]
+      },
+      {
+        "id": "tugma",
         "name": "Tugma",
-        "tags": "FastAPI · React · Supabase · Docker",
-        "desc": [
-          "Job-matching engine with a dual-sided recruitment backend on FastAPI and Docker — independent auth flows for job-seekers and recruiters on a shared service layer.",
-          "Hash-based matching algorithm computing candidate-to-listing alignment scores in O(1), reducing match query time versus a naïve full-scan."
-        ],
+        "subtitle": "Job-Matching Engine",
+        "tags": "FastAPI · Supabase · Docker",
         "badge": "2025",
-        "link": {
-          "href": "https://github.com/Xuinnz",
-          "label": "source"
-        }
+        "desc": [
+          "Engineered a dual-sided recruitment backend on FastAPI with Docker, serving independent auth flows for job-seekers and recruiters on a shared service layer.",
+          "Designed a hash-based matching algorithm computing candidate-to-listing alignment scores in O(1), reducing match query time versus a naïve full-scan over the same dataset."
+        ],
+        "fields": [
+          "backend"
+        ]
       },
       {
+        "id": "padayon",
         "name": "Padayon",
-        "tags": "Express.js · PostgreSQL · Vue.js · Vite",
-        "desc": [
-          "Hotel reservation engine focusing on relational database integrity, complex querying, and concurrency handling."
-        ],
+        "subtitle": "Hotel Booking System",
+        "tags": "Express · Vue · PostgreSQL",
         "badge": "2025",
-        "link": {
-          "href": "https://github.com/Xuinnz/Padayon",
-          "label": "source"
-        }
+        "desc": [
+          "Built a full-stack booking platform with Vue 3, Express, and PostgreSQL: JWT-secured routes, RESTful API services, and a PostgreSQL table-inheritance model for room availability and inventory."
+        ],
+        "links": [
+          {
+            "href": "https://github.com/Xuinnz/Padayon",
+            "label": "source"
+          }
+        ],
+        "fields": [
+          "backend",
+          "web"
+        ]
       },
       {
-        "name": "Donezo",
-        "tags": "Java · Java Swing",
+        "id": "donezo",
+        "name": "DoneZO",
+        "subtitle": "Task Prioritization Engine",
+        "tags": "Java · Java Swing · Flat-File DBMS",
+        "badge": "2024",
         "desc": [
-          "Custom prioritization algorithm for time-blocking to optimize task execution order."
+          "Built a custom flat-file persistence layer with session isolation and a collision-safe delimiter. The week is a 2D boolean grid of 15-minute slots, so a conflict check reads only the slots a task covers; tasks are scored by difficulty and urgency and packed greedily into days."
         ],
-        "badge": "2025",
-        "link": {
-          "href": "https://github.com/Xuinnz/DoneZo",
-          "label": "source"
-        }
+        "links": [
+          {
+            "href": "blog/donezo.html",
+            "label": "story"
+          },
+          {
+            "href": "https://github.com/Xuinnz/DoneZO",
+            "label": "source"
+          }
+        ],
+        "team": true,
+        "fields": [
+          "backend"
+        ]
       }
     ]
   },
   "experiences": {
-    "subtitle": "Leadership experiences across organizations.",
+    "subtitle": "Internships and leadership roles.",
     "items": [
       {
-        "role": "IT Intern",
-        "org": "NSJ Technologies",
-        "date": "08-2026 - 09-2026",
-        "datetime": "2026-03-10",
+        "id": "pepsico",
+        "short": "PepsiCola",
+        "role": "Software Developer Intern",
+        "org": "PepsiCola Products Philippines Inc.",
+        "location": "Muntinlupa, PH",
+        "date": "Oct 2026 – Present",
+        "datetime": "2026-10",
         "points": [
-          "Developed a production website for a Quadruple-A accredited contractor, built on Vue.js and Laravel with Cloudinary CDN media pipeline and a context-aware AI chatbot with dynamic route-based context injection..",
-          "Architected a custom block-based CMS with Vue.js rich text editor and dynamic JSON block renderer — eliminating developer dependency for content updates and enabling non-technical teams to independently manage blogs, news, and media.",
-          "Optimized frontend performance through lazy loading, image quantization, API caching, and pagination — reducing page load time by 93% (3.99s → 297ms), data transfer by 91% (97.8MB → 8.7MB), and HTTP requests by 80% (209 → 42)."
+          "Redesigned a bulk-approval workflow for 3,600+ monthly compliance records (Next.js server actions, Drizzle ORM, Neon Postgres), replacing per-record writes with one set-based read and one transactional batch write: ~2,000 → 4 database round trips and save latency from ~15s to under 1s. Added optimistic concurrency checks so records changed mid-review are skipped, not approved stale.",
+          "Built batched data entry and Excel import across 6 modules (up to 200 validated rows per atomic transaction). In a 1,000-record benchmark: DB calls 6,000 → 15, save time ~4 min → ~2s, admin notifications 2,000 → 10, with the full per-record audit trail preserved.",
+          "Hardened platform resilience end to end: safe HTTP transport retries for Neon, nested error boundaries to isolate UI failures, and no data loss on failed network transitions across 16 critical views."
+        ],
+        "fields": [
+          "backend",
+          "infra"
         ]
       },
       {
+        "id": "flouw",
+        "short": "Flouw Robotics",
+        "role": "Software Engineer Intern",
+        "org": "Flouw Robotics",
+        "location": "Cavite, PH",
+        "date": "Aug – Oct 2026",
+        "datetime": "2026-08",
+        "points": [
+          "Architected and built a full-stack e-commerce and training registration platform from scratch with Next.js 16 (App Router), React 19, and TypeScript.",
+          "Designed a low-cost infrastructure: single-instance SQLite (WAL mode) with Drizzle ORM on a 1 GB DigitalOcean Droplet via Docker, with real-time replication and disaster recovery through Litestream to a private Cloudflare R2 bucket.",
+          "Engineered a media pipeline using R2 presigned URLs for direct browser uploads and Cloudflare Image Transformations for responsive CDN delivery.",
+          "Built a custom cart and checkout with real-time stock reservation, order state machines, and dynamic shipping fees; developed an admin dashboard with RBAC (Better Auth) for orders, inventory, waitlists, vouchers, and site content.",
+          "Established a GitHub Actions CI/CD pipeline that builds and pushes Next.js standalone Docker images to GHCR for zero-downtime deployments."
+        ],
+        "fields": [
+          "infra",
+          "backend",
+          "web"
+        ]
+      },
+      {
+        "id": "nsj",
+        "short": "NSJ Technologies",
+        "role": "IT Intern",
+        "org": "NSJ Technologies Inc.",
+        "location": "Manila, PH",
+        "date": "Jul – Aug 2026",
+        "datetime": "2026-07",
+        "points": [
+          "Developed a production-ready website and custom CMS for New San Jose Builders Inc., a Quadruple-A accredited contractor, using Vue.js, TypeScript, and Laravel with Eloquent ORM.",
+          "Architected a block-based CMS with a custom Vue.js rich text editor and dynamic block renderer, storing flexible content as structured JSON.",
+          "Engineered authentication and authorization: cookie-based sessions, single session enforcement, multi-tier admin hierarchy, and granular RBAC.",
+          "Implemented frontend performance optimizations (lazy-loading, image quantization, asset caching, pagination), cutting load time by 90% (20.5s → 2.0s), payload by 88% (98.5MB → 12.0MB), and HTTP requests by 58% (224 → 93).",
+          "Secured deployment approval from 4 executive and department heads, including the VP of Operations and COO, within 3 weeks of the internship."
+        ],
+        "fields": [
+          "web",
+          "backend"
+        ]
+      },
+      {
+        "id": "shift-out",
+        "short": "Shift Out",
         "role": "Backend Department Head",
         "org": "Shift Out",
-        "date": "2025 - Present",
-        "datetime": "2026-03-10",
+        "location": "Manila, PH",
+        "date": "2025 – 2026",
+        "datetime": "2025",
         "points": [
-          "Designed and delivered Behind the Code workshop series covering backend architecture, Git branching, and CI/CD pipelines, directly upskilling 50+ members across 4 cohorts.",
-          "Established organization-wide code review standards and PR workflow policies, reducing merge conflicts and integration defects across all active tech projects."
+          "Designed and delivered the Behind the Code workshop series on backend architecture, Git branching, and CI/CD, upskilling 50+ members across 4 cohorts."
+        ],
+        "fields": [
+          "backend"
         ]
       },
       {
-        "role": "Membership Coordinator",
+        "id": "jbecp",
+        "short": "JBECP",
+        "role": "Membership Committee Head",
         "org": "JBECP - PUP Manila",
-        "date": "2025 - Present",
-        "datetime": "2026-03-10",
+        "location": "Manila, PH",
+        "date": "2025 – 2026",
+        "datetime": "2025",
         "points": [
-          "Architected a centralized membership platform on Supabase (PostgreSQL), consolidating onboarding, attendance, and engagement tracking for 400+ active members into a single auditable data source.",
-          "Designed row-level security policies and relational schemas to enforce role-based access control across all membership lifecycle events."
+          "Architected a centralized membership platform on Supabase (PostgreSQL), consolidating onboarding, attendance, and engagement tracking for 400+ active members into a single auditable data source."
+        ],
+        "fields": [
+          "backend"
         ]
       }
     ]
@@ -197,10 +372,9 @@
     "subtitle": "Server details, setup, and contact.",
     "server": {
       "paragraphs": [
-        "This site is served by a custom HTTP/1.1 server written in <a href=\"https://ziglang.org\" class=\"no-visited\" target=\"_blank\" rel=\"noopener noreferrer\">Zig 0.15.2</a>. It uses Linux <code>epoll</code> for I/O readiness and raw POSIX system calls for file serving — no libuv, no Tokio, no libevent. Single-threaded event loop. About 600 lines of Zig and a <code>build.zig</code>.",
-        "The binary is 350&nbsp;KB stripped. It speaks keep-alive, handles <code>Connection-Timeout</code> correctly, and returns a real <code>Content-Length</code> on every response. Static files only. Deployed on Microsoft Azure B2ats v2."
-      ],
-      "headers": "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 20274\nCache-Control: public, max-age=300\nConnection: keep-alive\nKeep-Alive: timeout=30, max=100"
+        "This site is served by a custom HTTP/1.1 server written in <a href=\"https://ziglang.org\" class=\"no-visited\" target=\"_blank\" rel=\"noopener noreferrer\">Zig 0.15.2</a>. It uses Linux <code>epoll</code> for I/O readiness and raw POSIX system calls for file serving — no libuv, no Tokio, no libevent. One thread, one event loop, about 800 lines of Zig and a <code>build.zig</code>.",
+        "Stripped, the binary is about 310&nbsp;KB. It speaks keep-alive, drops connections that sit idle for 60 seconds, and sends a real <code>Content-Length</code> on every response. Static files, plus <code>/health</code> and <code>/stats</code> endpoints. It runs on a Microsoft Azure B2ats v2 VM behind Caddy."
+      ]
     },
     "setup": [
       {
@@ -253,7 +427,8 @@
           "type": "resume",
           "href": "resume.pdf",
           "text": "resume.pdf",
-          "download": true
+          "download": true,
+          "hidden": true
         }
       ]
     }

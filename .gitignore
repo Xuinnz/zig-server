@@ -4,3 +4,6 @@ tailwindcss
 logs
 zig-out
 scripts
+# local benchmark tooling and its output (not used by the site)
+bench/
+public/data/bench.json
